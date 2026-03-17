@@ -49,7 +49,8 @@
     }
 
     html {
-      scroll-behavior: smooth
+      scroll-behavior: smooth;
+      overflow-x: hidden
     }
 
     body {
@@ -59,7 +60,8 @@
       line-height: 1.8;
       font-weight: 300;
       overflow-x: hidden;
-      -webkit-font-smoothing: antialiased
+      -webkit-font-smoothing: antialiased;
+      max-width: 100vw
     }
 
     body::before {
@@ -90,7 +92,8 @@
       align-items: center;
       text-align: center;
       padding: 2rem;
-      position: relative
+      position: relative;
+      overflow: hidden
     }
 
     .hero::before {
@@ -542,7 +545,8 @@
     .cta-section {
       text-align: center;
       padding: 8rem 2rem;
-      position: relative
+      position: relative;
+      overflow: hidden
     }
 
     .cta-section::before {

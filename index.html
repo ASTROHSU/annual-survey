@@ -4,1557 +4,354 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>區塊勢 — 讀者怎麼說</title>
-<meta name="description" content="付費讀者的真實回饋，看看他們為什麼選擇區塊勢。">
+<meta name="description" content="五年來付費讀者的真實回饋，看看他們為什麼選擇區塊勢。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700;900&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
-*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
-:root {
-  --bg: #f7f8fa;
-  --bg-elevated: #eef0f4;
-  --bg-card: #ffffff;
-  --text-primary: #343434;
-  --text-secondary: #6b6b6b;
-  --text-muted: #b1b1b1;
-  --accent: #2d8bc5;
-  --accent-dim: #236d9e;
-  --accent-glow: rgba(45, 139, 197, 0.08);
-  --border: rgba(52, 52, 52, 0.1);
-  --serif: 'Noto Serif TC', serif;
-  --sans: 'Noto Sans TC', sans-serif;
-}
-
-html { scroll-behavior: smooth; }
-body {
-  background: var(--bg);
-  color: var(--text-primary);
-  font-family: var(--sans);
-  line-height: 1.8;
-  font-weight: 300;
-  overflow-x: hidden;
-  -webkit-font-smoothing: antialiased;
-}
-
-/* Noise overlay */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.02'/%3E%3C/svg%3E");
-  pointer-events: none;
-  z-index: 9999;
-}
-
-.reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.8s ease, transform 0.8s ease; }
-.reveal.visible { opacity: 1; transform: translateY(0); }
-
-/* ===== SIDEBAR ===== */
-.sidebar-toggle {
-  position: fixed;
-  top: 1.5rem;
-  left: 1.5rem;
-  z-index: 1000;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 0.6rem 1rem;
-  font-family: var(--sans);
-  font-size: 0.8rem;
-  font-weight: 500;
-  color: var(--text-secondary);
-  cursor: pointer;
-  transition: all 0.2s;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-.sidebar-toggle:hover {
-  color: var(--accent);
-  border-color: var(--accent-dim);
-  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-}
-.sidebar-toggle-icon {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  width: 14px;
-}
-.sidebar-toggle-icon span {
-  display: block;
-  height: 1.5px;
-  background: currentColor;
-  border-radius: 1px;
-  transition: all 0.3s;
-}
-.sidebar-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.3);
-  z-index: 1001;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s;
-  backdrop-filter: blur(2px);
-}
-.sidebar-overlay.open {
-  opacity: 1;
-  pointer-events: auto;
-}
-.sidebar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 280px;
-  height: 100vh;
-  background: var(--bg-card);
-  border-right: 1px solid var(--border);
-  z-index: 1002;
-  transform: translateX(-100%);
-  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
-  display: flex;
-  flex-direction: column;
-  box-shadow: 4px 0 24px rgba(0,0,0,0.08);
-}
-.sidebar.open {
-  transform: translateX(0);
-}
-.sidebar-header {
-  padding: 2rem 1.5rem 1.5rem;
-  border-bottom: 1px solid var(--border);
-}
-.sidebar-header-title {
-  font-family: var(--serif);
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: var(--text-primary);
-}
-.sidebar-header-sub {
-  font-size: 0.75rem;
-  color: var(--text-muted);
-  margin-top: 0.3rem;
-}
-.sidebar-years {
-  flex: 1;
-  overflow-y: auto;
-  padding: 1rem 0;
-}
-.sidebar-year-item {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 0.9rem 1.5rem;
-  cursor: pointer;
-  transition: all 0.15s;
-  text-decoration: none;
-  color: var(--text-secondary);
-  font-size: 0.95rem;
-  border-left: 3px solid transparent;
-}
-.sidebar-year-item:hover {
-  background: var(--accent-glow);
-  color: var(--text-primary);
-}
-.sidebar-year-item.active {
-  color: var(--accent);
-  font-weight: 500;
-  border-left-color: var(--accent);
-  background: var(--accent-glow);
-}
-.sidebar-year-num {
-  font-family: var(--serif);
-  font-size: 1.4rem;
-  font-weight: 900;
-  line-height: 1;
-}
-.sidebar-year-label {
-  font-size: 0.8rem;
-  color: var(--text-muted);
-}
-.sidebar-year-item.active .sidebar-year-label {
-  color: var(--accent-dim);
-}
-.sidebar-close {
-  position: absolute;
-  top: 1.5rem;
-  right: 1rem;
-  background: none;
-  border: none;
-  font-size: 1.2rem;
-  color: var(--text-muted);
-  cursor: pointer;
-  padding: 0.3rem;
-  line-height: 1;
-  transition: color 0.2s;
-}
-.sidebar-close:hover { color: var(--text-primary); }
-
-/* ===== HERO ===== */
-.hero {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  padding: 2rem;
-  position: relative;
-}
-.hero::before {
-  content: '';
-  position: absolute;
-  top: -20%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 600px;
-  height: 600px;
-  background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
-  pointer-events: none;
-}
-.hero-label {
-  font-family: var(--sans);
-  font-size: 0.8rem;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: var(--accent);
-  margin-bottom: 2rem;
-  opacity: 0;
-  animation: fadeUp 1s 0.3s forwards;
-}
-.hero-logo {
-  margin-bottom: 2rem;
-}
-.hero-title {
-  font-family: var(--serif);
-  font-size: clamp(2.2rem, 6vw, 4.5rem);
-  font-weight: 900;
-  line-height: 1.3;
-  color: var(--text-primary);
-  max-width: 700px;
-  opacity: 0;
-  animation: fadeUp 1s 0.5s forwards;
-}
-.hero-title em {
-  font-style: normal;
-  color: var(--accent);
-}
-.hero-subtitle {
-  font-size: 1.1rem;
-  color: var(--text-secondary);
-  max-width: 500px;
-  margin-top: 1.5rem;
-  opacity: 0;
-  animation: fadeUp 1s 0.7s forwards;
-}
-.hero-stats {
-  display: flex;
-  gap: 3rem;
-  margin-top: 4rem;
-  opacity: 0;
-  animation: fadeUp 1s 0.9s forwards;
-}
-.hero-stat-num {
-  font-family: var(--serif);
-  font-size: clamp(2.5rem, 5vw, 3.5rem);
-  font-weight: 900;
-  color: var(--accent);
-  line-height: 1;
-}
-.hero-stat-label {
-  font-size: 0.8rem;
-  color: var(--text-secondary);
-  margin-top: 0.5rem;
-  letter-spacing: 0.05em;
-}
-.scroll-hint {
-  position: absolute;
-  bottom: 2rem;
-  left: 50%;
-  transform: translateX(-50%);
-  opacity: 0;
-  animation: fadeUp 1s 1.2s forwards;
-}
-.scroll-hint span {
-  display: block;
-  width: 1px;
-  height: 48px;
-  background: linear-gradient(to bottom, var(--accent), transparent);
-  margin: 0 auto;
-  animation: pulse 2s infinite;
-}
-
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(30px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-@keyframes pulse {
-  0%, 100% { opacity: 0.3; }
-  50% { opacity: 1; }
-}
-
-/* ===== SECTION LAYOUT ===== */
-section {
-  padding: 6rem 2rem;
-  max-width: 1100px;
-  margin: 0 auto;
-}
-.section-label {
-  font-size: 0.75rem;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: var(--accent);
-  margin-bottom: 1rem;
-}
-.section-heading {
-  font-family: var(--serif);
-  font-size: clamp(1.6rem, 4vw, 2.4rem);
-  font-weight: 700;
-  line-height: 1.4;
-  margin-bottom: 1.5rem;
-}
-.section-body {
-  font-size: 1.05rem;
-  color: var(--text-secondary);
-  max-width: 640px;
-  margin-bottom: 3rem;
-}
-
-/* ===== NPS BAR ===== */
-.nps-section { text-align: center; }
-.nps-bar-container {
-  display: flex;
-  justify-content: center;
-  align-items: flex-end;
-  gap: 6px;
-  height: 200px;
-  margin: 3rem auto 1.5rem;
-  max-width: 600px;
-}
-.nps-bar-group { display: flex; flex-direction: column; align-items: center; flex: 1; }
-.nps-bar {
-  width: 100%;
-  border-radius: 4px 4px 0 0;
-  transition: height 1.2s cubic-bezier(0.22, 1, 0.36, 1);
-  height: 0;
-  position: relative;
-}
-.nps-bar.detractor { background: linear-gradient(to top, #e0c4c4, #c9a0a0); }
-.nps-bar.passive { background: linear-gradient(to top, #c8d4de, #a8bcc8); }
-.nps-bar.promoter { background: linear-gradient(to top, var(--accent-dim), var(--accent)); }
-.nps-bar-count {
-  font-family: var(--serif);
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  margin-bottom: 0.4rem;
-}
-.nps-bar-score {
-  font-size: 0.75rem;
-  color: var(--text-muted);
-  margin-top: 0.6rem;
-}
-.nps-legend {
-  display: flex;
-  justify-content: center;
-  gap: 2rem;
-  font-size: 0.8rem;
-  color: var(--text-secondary);
-  margin-top: 2rem;
-}
-.nps-legend span::before {
-  content: '';
-  display: inline-block;
-  width: 10px;
-  height: 10px;
-  border-radius: 2px;
-  margin-right: 6px;
-  vertical-align: middle;
-}
-.nps-legend .leg-p::before { background: var(--accent); }
-.nps-legend .leg-n::before { background: #a8bcc8; }
-.nps-legend .leg-d::before { background: #c9a0a0; }
-.nps-big {
-  font-family: var(--serif);
-  font-size: 5rem;
-  font-weight: 900;
-  color: var(--accent);
-  line-height: 1;
-}
-.nps-big-label {
-  font-size: 0.85rem;
-  color: var(--text-secondary);
-  margin-top: 0.5rem;
-}
-
-/* ===== HIGHLIGHT STATS ===== */
-.stat-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1.5rem;
-  margin-top: 2rem;
-}
-.stat-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 2rem;
-  text-align: center;
-  transition: transform 0.3s, box-shadow 0.3s;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
-}
-.stat-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-}
-.stat-card-num {
-  font-family: var(--serif);
-  font-size: 2.5rem;
-  font-weight: 900;
-  color: var(--accent);
-  line-height: 1;
-}
-.stat-card-label {
-  font-size: 0.9rem;
-  color: var(--text-secondary);
-  margin-top: 0.8rem;
-  line-height: 1.5;
-}
-
-/* ===== TESTIMONIALS ===== */
-.testimonials-grid {
-  columns: 1;
-  gap: 1.2rem;
-}
-@media (min-width: 640px) { .testimonials-grid { columns: 2; } }
-@media (min-width: 960px) { .testimonials-grid { columns: 3; } }
-
-.testimonial-card {
-  break-inside: avoid;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 1.8rem;
-  margin-bottom: 1.2rem;
-  transition: box-shadow 0.3s, transform 0.3s;
-  position: relative;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
-}
-.testimonial-card:hover {
-  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-  transform: translateY(-2px);
-}
-.testimonial-card::before {
-  content: '\201C';
-  font-family: var(--serif);
-  font-size: 3rem;
-  color: var(--accent);
-  opacity: 0.3;
-  position: absolute;
-  top: 0.8rem;
-  right: 1.2rem;
-  line-height: 1;
-}
-.testimonial-text {
-  font-size: 0.95rem;
-  line-height: 1.8;
-  color: var(--text-primary);
-  position: relative;
-  z-index: 1;
-}
-.testimonial-meta {
-  margin-top: 1.2rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 0.75rem;
-  color: var(--text-muted);
-}
-.testimonial-score {
-  background: rgba(45, 139, 197, 0.1);
-  color: var(--accent);
-  padding: 0.2rem 0.6rem;
-  border-radius: 4px;
-  font-weight: 500;
-  font-size: 0.75rem;
-}
-.testimonial-featured {
-  border-color: var(--accent-dim);
-  background: linear-gradient(135deg, #f5fafd, rgba(45, 139, 197, 0.06));
-}
-.testimonial-featured .testimonial-text {
-  font-family: var(--serif);
-  font-size: 1.1rem;
-}
-
-/* ===== WHY SUBSCRIBE ===== */
-.reason-bars { max-width: 600px; margin: 2rem 0; }
-.reason-row {
-  margin-bottom: 1.2rem;
-}
-.reason-label-row {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 0.4rem;
-}
-.reason-label { font-size: 0.9rem; color: var(--text-primary); }
-.reason-pct { font-size: 0.85rem; color: var(--accent); font-weight: 500; }
-.reason-track {
-  height: 6px;
-  background: var(--bg-elevated);
-  border-radius: 3px;
-  overflow: hidden;
-}
-.reason-fill {
-  height: 100%;
-  background: linear-gradient(to right, var(--accent-dim), var(--accent));
-  border-radius: 3px;
-  width: 0;
-  transition: width 1.2s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-/* ===== READER PROFILE ===== */
-.profile-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 2rem;
-  margin-top: 2rem;
-}
-.profile-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 2rem;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
-}
-.profile-card h3 {
-  font-family: var(--serif);
-  font-size: 1.1rem;
-  color: var(--accent);
-  margin-bottom: 1.5rem;
-}
-.profile-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.6rem 0;
-  border-bottom: 1px solid rgba(0,0,0,0.05);
-}
-.profile-item:last-child { border-bottom: none; }
-.profile-item-label { font-size: 0.9rem; color: var(--text-secondary); }
-.profile-item-value { font-size: 0.9rem; color: var(--text-primary); font-weight: 500; }
-
-/* ===== CTA ===== */
-.cta-section {
-  text-align: center;
-  padding: 8rem 2rem;
-  position: relative;
-}
-.cta-section::before {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 800px;
-  height: 400px;
-  background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
-  pointer-events: none;
-}
-.cta-heading {
-  font-family: var(--serif);
-  font-size: clamp(1.8rem, 4vw, 3rem);
-  font-weight: 900;
-  line-height: 1.3;
-  margin-bottom: 1rem;
-  position: relative;
-}
-.cta-sub {
-  font-size: 1.05rem;
-  color: var(--text-secondary);
-  max-width: 480px;
-  margin: 0 auto 2.5rem;
-  position: relative;
-}
-.cta-btn {
-  display: inline-block;
-  padding: 1rem 3rem;
-  background: var(--accent);
-  color: #ffffff;
-  font-family: var(--sans);
-  font-size: 1rem;
-  font-weight: 700;
-  text-decoration: none;
-  border-radius: 8px;
-  transition: transform 0.2s, box-shadow 0.3s;
-  position: relative;
-}
-.cta-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 30px rgba(45, 139, 197, 0.3);
-}
-
-/* ===== DIVIDER ===== */
-.divider {
-  width: 60px;
-  height: 1px;
-  background: var(--accent-dim);
-  margin: 0 auto;
-}
-
-/* ===== FOOTER ===== */
-footer {
-  text-align: center;
-  padding: 3rem 2rem;
-  font-size: 0.8rem;
-  color: var(--text-muted);
-  border-top: 1px solid var(--border);
-  max-width: 1100px;
-  margin: 0 auto;
-}
-
-/* ===== FILTER TABS ===== */
-.filter-tabs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 2rem;
-}
-.filter-tab {
-  padding: 0.5rem 1rem;
-  background: transparent;
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  color: var(--text-secondary);
-  font-size: 0.8rem;
-  font-family: var(--sans);
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.filter-tab:hover, .filter-tab.active {
-  background: rgba(45, 139, 197, 0.1);
-  border-color: var(--accent-dim);
-  color: var(--accent);
-}
-
-/* ===== MARQUEE ===== */
-.marquee-section {
-  overflow: hidden;
-  padding: 3rem 0;
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-}
-.marquee-track {
-  display: flex;
-  gap: 3rem;
-  animation: marquee 40s linear infinite;
-  width: max-content;
-}
-.marquee-item {
-  font-family: var(--serif);
-  font-size: clamp(1.2rem, 2.5vw, 1.6rem);
-  color: #b0bfc8;
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-.marquee-item em {
-  font-style: normal;
-  color: var(--accent);
-}
-@keyframes marquee {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
-}
-
-/* ===== RESPONSIVE ===== */
-@media (max-width: 640px) {
-  .hero-stats { flex-direction: column; gap: 1.5rem; }
-  section { padding: 4rem 1.2rem; }
-  .nps-bar-container { height: 140px; gap: 3px; }
-  .nps-big { font-size: 3.5rem; }
-  .stat-grid { grid-template-columns: 1fr 1fr; gap: 1rem; }
-  .stat-card { padding: 1.2rem; }
-  .stat-card-num { font-size: 2rem; }
-  .filter-tabs { gap: 0.4rem; }
-  .nps-legend { flex-wrap: wrap; gap: 1rem; }
-  .sidebar { width: 260px; }
-  .sidebar-toggle { left: 1rem; top: 1rem; padding: 0.5rem 0.8rem; font-size: 0.75rem; }
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#f7f8fa;--bg-elevated:#eef0f4;--bg-card:#fff;--text-primary:#343434;--text-secondary:#6b6b6b;--text-muted:#b1b1b1;--accent:#2d8bc5;--accent-dim:#236d9e;--accent-glow:rgba(45,139,197,.08);--border:rgba(52,52,52,.1);--serif:'Noto Serif TC',serif;--sans:'Noto Sans TC',sans-serif}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text-primary);font-family:var(--sans);line-height:1.8;font-weight:300;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.02'/%3E%3C/svg%3E");pointer-events:none;z-index:9999}
+.reveal{opacity:0;transform:translateY(40px);transition:opacity .8s ease,transform .8s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:2rem;position:relative}
+.hero::before{content:'';position:absolute;top:-20%;left:50%;transform:translateX(-50%);width:600px;height:600px;background:radial-gradient(circle,var(--accent-glow) 0%,transparent 70%);pointer-events:none}
+.hero-logo{margin-bottom:2rem}
+.hero-label{font-size:.8rem;letter-spacing:.3em;text-transform:uppercase;color:var(--accent);margin-bottom:2rem;opacity:0;animation:fadeUp 1s .3s forwards}
+.hero-title{font-family:var(--serif);font-size:clamp(2.2rem,6vw,4.5rem);font-weight:900;line-height:1.3;max-width:700px;opacity:0;animation:fadeUp 1s .5s forwards}
+.hero-title em{font-style:normal;color:var(--accent)}
+.hero-subtitle{font-size:1.1rem;color:var(--text-secondary);max-width:520px;margin-top:1.5rem;opacity:0;animation:fadeUp 1s .7s forwards}
+.hero-stats{display:flex;gap:3rem;margin-top:4rem;opacity:0;animation:fadeUp 1s .9s forwards}
+.hero-stat-num{font-family:var(--serif);font-size:clamp(2.5rem,5vw,3.5rem);font-weight:900;color:var(--accent);line-height:1}
+.hero-stat-label{font-size:.8rem;color:var(--text-secondary);margin-top:.5rem;letter-spacing:.05em}
+.scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);opacity:0;animation:fadeUp 1s 1.2s forwards}
+.scroll-hint span{display:block;width:1px;height:48px;background:linear-gradient(to bottom,var(--accent),transparent);margin:0 auto;animation:pulse 2s infinite}
+@keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:.3}50%{opacity:1}}
+section{padding:6rem 2rem;max-width:1100px;margin:0 auto}
+.section-label{font-size:.75rem;letter-spacing:.3em;text-transform:uppercase;color:var(--accent);margin-bottom:1rem}
+.section-heading{font-family:var(--serif);font-size:clamp(1.6rem,4vw,2.4rem);font-weight:700;line-height:1.4;margin-bottom:1.5rem}
+.section-body{font-size:1.05rem;color:var(--text-secondary);max-width:640px;margin-bottom:3rem}
+.divider{width:60px;height:1px;background:var(--accent-dim);margin:0 auto}
+.timeline-row{display:flex;gap:0;margin:2rem 0;border-radius:12px;overflow:hidden;border:1px solid var(--border)}
+.timeline-cell{flex:1;padding:1.5rem 1rem;text-align:center;cursor:pointer;transition:background .3s,color .3s;background:var(--bg-card);border-right:1px solid var(--border)}
+.timeline-cell:last-child{border-right:none}
+.timeline-cell:hover{background:var(--bg-elevated)}
+.timeline-cell.active{background:var(--accent);color:#fff}
+.timeline-cell.active .tl-year,.timeline-cell.active .tl-responses,.timeline-cell.active .tl-stat{color:#fff}
+.timeline-cell.active .tl-responses,.timeline-cell.active .tl-stat{opacity:.8}
+.tl-year{font-family:var(--serif);font-size:1.3rem;font-weight:700;color:var(--text-primary)}
+.tl-responses{font-size:.75rem;color:var(--text-muted);margin-top:.2rem}
+.tl-stat{font-size:.78rem;color:var(--text-secondary);margin-top:.5rem}
+.year-panel{display:none}.year-panel.active{display:block}
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.2rem;margin:2rem 0}
+.stat-card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:1.5rem;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.stat-card-num{font-family:var(--serif);font-size:2.2rem;font-weight:900;color:var(--accent);line-height:1}
+.stat-card-label{font-size:.85rem;color:var(--text-secondary);margin-top:.6rem;line-height:1.5}
+.testimonials-grid{columns:1;gap:1.2rem}
+@media(min-width:640px){.testimonials-grid{columns:2}}
+@media(min-width:960px){.testimonials-grid{columns:3}}
+.testimonial-card{break-inside:avoid;background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:1.8rem;margin-bottom:1.2rem;transition:box-shadow .3s,transform .3s;position:relative;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.testimonial-card:hover{box-shadow:0 8px 24px rgba(0,0,0,.08);transform:translateY(-2px)}
+.testimonial-card::before{content:'\201C';font-family:var(--serif);font-size:3rem;color:var(--accent);opacity:.2;position:absolute;top:.6rem;right:1.2rem;line-height:1}
+.testimonial-text{font-size:.95rem;line-height:1.8;position:relative;z-index:1}
+.testimonial-meta{margin-top:1rem;font-size:.75rem;color:var(--text-muted);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.4rem}
+.testimonial-tag{display:inline-block;background:var(--bg-elevated);padding:.15rem .6rem;border-radius:10px;font-size:.7rem;color:var(--text-secondary)}
+.marquee-section{overflow:hidden;padding:3rem 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.marquee-track{display:flex;gap:3rem;animation:marquee 45s linear infinite;width:max-content}
+.marquee-item{font-family:var(--serif);font-size:clamp(1.1rem,2.5vw,1.5rem);color:#b0bfc8;white-space:nowrap;flex-shrink:0}
+.marquee-item em{font-style:normal;color:var(--accent)}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.reason-bars{max-width:600px;margin:2rem 0}
+.reason-row{margin-bottom:1.2rem}
+.reason-label-row{display:flex;justify-content:space-between;margin-bottom:.4rem}
+.reason-label{font-size:.9rem}
+.reason-pct{font-size:.85rem;color:var(--accent);font-weight:500}
+.reason-track{height:6px;background:var(--bg-elevated);border-radius:3px;overflow:hidden}
+.reason-fill{height:100%;background:linear-gradient(to right,var(--accent-dim),var(--accent));border-radius:3px;width:0;transition:width 1.2s cubic-bezier(.22,1,.36,1)}
+.profile-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:2rem;margin-top:2rem}
+.profile-card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:2rem;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.profile-card h3{font-family:var(--serif);font-size:1.1rem;color:var(--accent);margin-bottom:1.5rem}
+.profile-item{display:flex;justify-content:space-between;align-items:center;padding:.6rem 0;border-bottom:1px solid rgba(0,0,0,.05)}
+.profile-item:last-child{border-bottom:none}
+.profile-item-label{font-size:.9rem;color:var(--text-secondary)}
+.profile-item-value{font-size:.9rem;font-weight:500}
+.cta-section{text-align:center;padding:8rem 2rem;position:relative}
+.cta-section::before{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:800px;height:400px;background:radial-gradient(circle,var(--accent-glow) 0%,transparent 70%);pointer-events:none}
+.cta-heading{font-family:var(--serif);font-size:clamp(1.8rem,4vw,3rem);font-weight:900;line-height:1.3;margin-bottom:1rem;position:relative}
+.cta-sub{font-size:1.05rem;color:var(--text-secondary);max-width:480px;margin:0 auto 2.5rem;position:relative}
+.cta-btn{display:inline-block;padding:1rem 3rem;background:var(--accent);color:#fff;font-family:var(--sans);font-size:1rem;font-weight:700;text-decoration:none;border-radius:8px;transition:transform .2s,box-shadow .3s;position:relative}
+.cta-btn:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(45,139,197,.3)}
+footer{text-align:center;padding:3rem 2rem;font-size:.8rem;color:var(--text-muted);border-top:1px solid var(--border);max-width:1100px;margin:0 auto}
+.load-more-btn{display:block;margin:2rem auto 0;padding:.7rem 2rem;background:transparent;border:1px solid var(--border);border-radius:8px;color:var(--text-secondary);font-family:var(--sans);font-size:.9rem;cursor:pointer;transition:all .2s}
+.load-more-btn:hover{border-color:var(--accent);color:var(--accent)}
+.topic-pill{display:inline-block;padding:.45rem 1rem;background:var(--bg-card);border:1px solid var(--border);border-radius:20px;font-size:.85rem;color:var(--text-primary);transition:all .2s}
+.topic-pill:hover{border-color:var(--accent);color:var(--accent)}
+.panel-heading{font-family:var(--serif);font-size:1.15rem;margin:2.5rem 0 1.5rem;color:var(--text-primary)}
+@media(max-width:640px){
+  .hero-stats{flex-direction:column;gap:1.5rem}
+  section{padding:4rem 1.2rem}
+  .stat-grid{grid-template-columns:1fr 1fr;gap:.8rem}
+  .stat-card{padding:1.2rem}
+  .stat-card-num{font-size:1.8rem}
+  .timeline-row{flex-wrap:wrap}
+  .timeline-cell{flex:1 1 33%;border-bottom:1px solid var(--border)}
 }
 </style>
 </head>
 <body>
-
-<!-- SIDEBAR -->
-<button class="sidebar-toggle" id="sidebarToggle">
-  <div class="sidebar-toggle-icon"><span></span><span></span><span></span></div>
-  歷年報告
-</button>
-<div class="sidebar-overlay" id="sidebarOverlay"></div>
-<nav class="sidebar" id="sidebar">
-  <button class="sidebar-close" id="sidebarClose">&times;</button>
-  <div class="sidebar-header">
-    <div class="sidebar-header-title">歷年讀者調查</div>
-    <div class="sidebar-header-sub">選擇年份查看完整報告</div>
-  </div>
-  <div class="sidebar-years" id="sidebarYears"></div>
-</nav>
-
-<!-- HERO -->
 <header class="hero">
-  <div class="hero-logo" style="opacity:0; animation: fadeUp 1s 0.1s forwards;">
-    <img src="https://i.urusai.cc/yaku8.png" alt="區塊勢" style="height: 80px; width: auto;">
+  <div class="hero-logo" style="opacity:0;animation:fadeUp 1s .1s forwards">
+    <img src="https://i.urusai.cc/yaku8.png" alt="區塊勢" style="height:80px;width:auto">
   </div>
-  <div class="hero-label" id="heroLabel"></div>
-  <h1 class="hero-title">付費讀者<br>想告訴你<em>一件事</em></h1>
-  <p class="hero-subtitle">以下所有內容，都來自正在閱讀區塊勢的人親手寫下的回饋。</p>
-  <div class="hero-stats" id="heroStats"></div>
+  <div class="hero-label">2020 — 2025 讀者調查</div>
+  <h1 class="hero-title">五年來，付費讀者<br>想告訴你<em>同一件事</em></h1>
+  <p class="hero-subtitle">從 2020 年到 2025 年，每一年我們都會問讀者：區塊勢對你來說是什麼？以下是他們親手寫下的答案。</p>
+  <div class="hero-stats">
+    <div><div class="hero-stat-num" data-count="8" data-suffix="年+">0</div><div class="hero-stat-label">持續出刊，從未中斷</div></div>
+    <div><div class="hero-stat-num" data-count="700" data-suffix="+">0</div><div class="hero-stat-label">篇原創文章</div></div>
+    <div><div class="hero-stat-num" data-count="48" data-suffix="%">0</div><div class="hero-stat-label">的讀者跟幣圈工作無關</div></div>
+  </div>
   <div class="scroll-hint"><span></span></div>
 </header>
 
-<!-- MARQUEE -->
 <div class="marquee-section">
-  <div class="marquee-track" id="marqueeTrack"></div>
+  <div class="marquee-track">
+    <div class="marquee-item">「<em>幣圈唯一清流</em>」— 2025</div>
+    <div class="marquee-item">「<em>深入淺出又切合時事</em>」— 2022</div>
+    <div class="marquee-item">「<em>有溫度的表達方式</em>」— 2025</div>
+    <div class="marquee-item">「<em>像我的另一雙眼睛</em>」— 2023</div>
+    <div class="marquee-item">「<em>說人話的區塊鏈媒體</em>」— 2025</div>
+    <div class="marquee-item">「<em>省下不少資料蒐集的時間</em>」— 2020</div>
+    <div class="marquee-item">「<em>既廣且深的獨立媒體</em>」— 2022</div>
+    <div class="marquee-item">「<em>雜訊滿天飛時可信賴的來源</em>」— 2025</div>
+    <div class="marquee-item">「<em>幣圈唯一清流</em>」— 2025</div>
+    <div class="marquee-item">「<em>深入淺出又切合時事</em>」— 2022</div>
+    <div class="marquee-item">「<em>有溫度的表達方式</em>」— 2025</div>
+    <div class="marquee-item">「<em>像我的另一雙眼睛</em>」— 2023</div>
+    <div class="marquee-item">「<em>說人話的區塊鏈媒體</em>」— 2025</div>
+    <div class="marquee-item">「<em>省下不少資料蒐集的時間</em>」— 2020</div>
+    <div class="marquee-item">「<em>既廣且深的獨立媒體</em>」— 2022</div>
+    <div class="marquee-item">「<em>雜訊滿天飛時可信賴的來源</em>」— 2025</div>
+  </div>
 </div>
 
-<!-- NPS / SATISFACTION SECTION (rendered by JS) -->
-<div id="npsSection"></div>
-
-<div class="divider"></div>
-
-<!-- KEY STATS -->
 <section class="reveal">
-  <div class="section-label">數字說話</div>
-  <div class="section-heading">不只是喜歡，是離不開</div>
-  <div class="section-body">
-    這些數字來自付費讀者的匿名問卷。沒有篩選，沒有修飾。
+  <div class="section-label">訂閱之後會看到什麼</div>
+  <div class="section-heading">區塊勢在寫什麼？</div>
+  <div class="section-body">每週三篇原創文章、一集 Podcast。以下是讀者在問卷中特別提到、讓他們印象深刻的主題類型。</div>
+  <div style="display:flex;flex-wrap:wrap;gap:.6rem;margin-bottom:2rem">
+    <span class="topic-pill">穩定幣跨境支付實測</span>
+    <span class="topic-pill">以太坊升級解析</span>
+    <span class="topic-pill">Bybit 交易所遭駭事件</span>
+    <span class="topic-pill">代幣化股票（台積電上鏈）</span>
+    <span class="topic-pill">SEC 訴訟與監管動態</span>
+    <span class="topic-pill">DeFi 踩雷實錄</span>
+    <span class="topic-pill">零知識證明</span>
+    <span class="topic-pill">Gitcoin 公共資助</span>
+    <span class="topic-pill">數位身分與隱私錢包</span>
+    <span class="topic-pill">DAO 治理</span>
+    <span class="topic-pill">AI × 區塊鏈</span>
+    <span class="topic-pill">精選書評</span>
   </div>
-  <div class="stat-grid" id="statGrid"></div>
+  <div style="font-size:.95rem;color:var(--text-secondary);max-width:640px">區塊勢的特色是作者會自己先動手操作，再用你聽得懂的方式寫出來。不管是成功的經驗還是踩雷的教訓，都會如實分享。讀者最常給的回饋是「淺顯易懂」。</div>
 </section>
 
 <div class="divider"></div>
 
-<!-- WHY SUBSCRIBE (conditional) -->
-<div id="reasonSection"></div>
-
-<!-- TESTIMONIALS -->
-<section class="reveal" id="testimonials">
-  <div class="section-label">真實回饋</div>
-  <div class="section-heading">讀者自己怎麼說</div>
-  <div class="section-body">
-    以下是讀者在問卷中寫下的回答，一字未改。你可以用分類篩選，找到和你最相似的讀者怎麼說。
-  </div>
-  <div class="filter-tabs" id="filterTabs"></div>
-  <div class="testimonials-grid" id="testimonialsGrid"></div>
+<section class="reveal" id="years-section">
+  <div class="section-label">逐年回顧</div>
+  <div class="section-heading">點選年份，看看那一年的讀者怎麼說</div>
+  <div class="section-body">五年來的問卷設計略有不同，但讀者的心意始終一致。</div>
+  <div class="timeline-row" id="yearTabs"></div>
+  <div id="yearPanels"></div>
 </section>
 
 <div class="divider"></div>
 
-<!-- READER PROFILE -->
+<section class="reveal">
+  <div class="section-label">2025 最新調查</div>
+  <div class="section-heading">今年的關鍵數字</div>
+  <div class="section-body">以下來自 2025 年度問卷，是距今最新的一次調查結果。</div>
+  <div class="stat-grid">
+    <div class="stat-card"><div class="stat-card-num">+61</div><div class="stat-card-label">NPS 淨推薦分數</div></div>
+    <div class="stat-card"><div class="stat-card-num">94%</div><div class="stat-card-label">多數或每篇都看</div></div>
+    <div class="stat-card"><div class="stat-card-num">57%</div><div class="stat-card-label">停更會非常失望</div></div>
+    <div class="stat-card"><div class="stat-card-num">76%</div><div class="stat-card-label">認為深度「剛好」</div></div>
+    <div class="stat-card"><div class="stat-card-num">90%</div><div class="stat-card-label">認為篇幅「剛好」</div></div>
+    <div class="stat-card"><div class="stat-card-num">39%</div><div class="stat-card-label">付費是為了支持這樣的媒體</div></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section class="reveal">
+  <div class="section-label">使用情境</div>
+  <div class="section-heading">什麼時候會想到區塊勢？</div>
+  <div class="reason-bars">
+    <div class="reason-row reveal"><div class="reason-label-row"><span class="reason-label">例行性閱讀，保持產業了解</span><span class="reason-pct">89%</span></div><div class="reason-track"><div class="reason-fill" data-width="100%"></div></div></div>
+    <div class="reason-row reveal"><div class="reason-label-row"><span class="reason-label">想了解新聞事件的來龍去脈</span><span class="reason-pct">63%</span></div><div class="reason-track"><div class="reason-fill" data-width="71%"></div></div></div>
+    <div class="reason-row reveal"><div class="reason-label-row"><span class="reason-label">尋找產業發展趨勢的線索</span><span class="reason-pct">54%</span></div><div class="reason-track"><div class="reason-fill" data-width="60%"></div></div></div>
+    <div class="reason-row reveal"><div class="reason-label-row"><span class="reason-label">需要理解某個技術概念</span><span class="reason-pct">49%</span></div><div class="reason-track"><div class="reason-fill" data-width="55%"></div></div></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
 <section class="reveal">
   <div class="section-label">讀者輪廓</div>
-  <div class="section-heading">什麼樣的人在讀區塊勢？</div>
-  <div class="section-body">
-    他們不全是業內人士，而是對這個世界充滿好奇的人。
+  <div class="section-heading">將近一半的讀者，工作跟區塊鏈完全無關</div>
+  <div class="section-body">你不需要是幣圈的人才能讀區塊勢。事實上，48% 的付費讀者純粹是對這個領域感到好奇。這裡不是寫給工程師或交易員看的，而是寫給任何想搞懂這個世界正在發生什麼事的人。</div>
+  <div class="profile-grid">
+    <div class="profile-card reveal"><h3>年齡分佈</h3>
+      <div class="profile-item"><span class="profile-item-label">21 – 30 歲</span><span class="profile-item-value">8%</span></div>
+      <div class="profile-item"><span class="profile-item-label">31 – 40 歲</span><span class="profile-item-value">40%</span></div>
+      <div class="profile-item"><span class="profile-item-label">41 – 50 歲</span><span class="profile-item-value">29%</span></div>
+      <div class="profile-item"><span class="profile-item-label">51 – 60 歲</span><span class="profile-item-value">18%</span></div>
+      <div class="profile-item"><span class="profile-item-label">61 歲以上</span><span class="profile-item-value">5%</span></div>
+    </div>
+    <div class="profile-card reveal"><h3>與區塊鏈的關係</h3>
+      <div class="profile-item"><span class="profile-item-label">純粹有興趣</span><span class="profile-item-value">48%</span></div>
+      <div class="profile-item"><span class="profile-item-label">部分相關</span><span class="profile-item-value">19%</span></div>
+      <div class="profile-item"><span class="profile-item-label">主要工作</span><span class="profile-item-value">13%</span></div>
+      <div class="profile-item"><span class="profile-item-label">有興趣轉職</span><span class="profile-item-value">11%</span></div>
+    </div>
+    <div class="profile-card reveal"><h3>訂閱年資</h3>
+      <div class="profile-item"><span class="profile-item-label">不到 1 年</span><span class="profile-item-value">6%</span></div>
+      <div class="profile-item"><span class="profile-item-label">1 – 3 年</span><span class="profile-item-value">45%</span></div>
+      <div class="profile-item"><span class="profile-item-label">4 – 6 年</span><span class="profile-item-value">29%</span></div>
+      <div class="profile-item"><span class="profile-item-label">7 年以上</span><span class="profile-item-value">20%</span></div>
+    </div>
   </div>
-  <div class="profile-grid" id="profileGrid"></div>
+</section>
+
+<section class="reveal" style="text-align:center">
+  <div class="section-label">關於作者</div>
+  <div class="section-heading">許明恩，一個人寫了八年</div>
+  <div class="section-body" style="margin-left:auto;margin-right:auto">區塊勢從 2017 年創辦至今，只有一位作者。台大電子所畢業後，他選擇不進科技業，而是全職寫作。每週三篇原創內容、一集 Podcast，累積超過七百篇文章、兩百七十集以上的訪談。曾受邀至中央銀行、法官學院、調查局分享區塊鏈知識，也曾在 TEDx 演講。讀者最常給他的回饋是「淺顯易懂」——而這也是他最在意的事。</div>
+  <div class="section-body" style="margin-left:auto;margin-right:auto;margin-top:0">他不只是在報導這個產業，他自己就在裡面。從 DeFi 踩雷到穩定幣跨境支付，從 Gitcoin 公共資助到鏈上紅包實驗，很多文章的起點是他自己先試過一遍——成功的寫，失敗的也寫。</div>
 </section>
 
 <div class="divider"></div>
 
-<!-- SITUATIONS (conditional) -->
-<div id="situationSection"></div>
+<section class="reveal" style="text-align:center">
+  <div class="section-label">為什麼付費</div>
+  <div class="section-heading">最多人付費的理由，跟你想的不一樣</div>
+  <div class="section-body" style="margin-left:auto;margin-right:auto">我們問讀者「促使你付費訂閱的關鍵原因是什麼？」，最多人選的答案是「想支持這樣的媒體存在」。不是因為非看不可，而是因為他們希望這個聲音不要消失。在一個充斥著業配、報牌和聳動標題的產業裡，讀者選擇用付費的方式，讓一份不靠廣告、只專注內容的獨立媒體繼續走下去。</div>
+</section>
 
-<!-- CTA -->
+<div class="divider"></div>
+
 <section class="cta-section reveal">
-  <div class="cta-heading">看到這裡，<br>也許你已經準備好了</div>
-  <p class="cta-sub">
-    讀者們已經用他們的時間和金錢投了票。<br>
-    現在，輪到你了。
-  </p>
-  <a href="https://blocktrend.substack.com/subscribe" target="_blank" rel="noopener" class="cta-btn">
-    立即訂閱區塊勢 →
-  </a>
+  <div class="cta-heading">如果你也覺得這樣的聲音不該消失</div>
+  <p class="cta-sub">不管你是第一次聽到區塊勢，還是已經猶豫了很久。<br>六百多位讀者已經用行動回答了這個問題。</p>
+  <a href="https://blocktrend.substack.com/subscribe" target="_blank" rel="noopener" class="cta-btn">立即訂閱區塊勢 →</a>
 </section>
 
 <footer>
-  <img src="https://i.urusai.cc/yaku8.png" alt="區塊勢" style="height: 36px; width: auto; margin-bottom: 1rem; opacity: 0.5;">
-  <p id="footerSource"></p>
-  <p style="margin-top: 0.5rem;">&copy; 2026 區塊勢</p>
+  <img src="https://i.urusai.cc/yaku8.png" alt="區塊勢" style="height:36px;width:auto;margin-bottom:1rem;opacity:.5">
+  <p>資料來源：區塊勢 2020–2025 年度內容滿意度調查</p>
+  <p style="margin-top:.5rem">© 2026 區塊勢</p>
 </footer>
 
 <script>
-// ===================================================================
-// REPORTS DATA
-// ===================================================================
-const REPORTS = {
-  2026: {
-    label: "2026 年度讀者調查",
-    footerSource: "資料來源：區塊勢 2026 年度內容滿意度調查",
-    heroStats: [
-      { value: 8.9, decimal: true, label: "平均推薦分數（滿分 10）" },
-      { value: 94, suffix: "%", label: "每篇或多數文章都看" },
-      { value: 57, suffix: "%", label: "停更會「非常失望」" },
-    ],
-    marqueeQuotes: [
-      "幣圈唯一清流", "有溫度的表達方式", "深入淺出，不輕易流於媚俗",
-      "認真說人話的區塊鏈媒體", "讓人很舒服的幣圈歸屬感", "有靈魂的電子報",
-      "雜訊滿天飛時可信賴的資訊來源", "一般人模仿不來的",
-    ],
-    npsData: [
-      { score: 0, count: 0 }, { score: 1, count: 1 }, { score: 2, count: 1 },
-      { score: 3, count: 0 }, { score: 4, count: 0 }, { score: 5, count: 0 },
-      { score: 6, count: 1 }, { score: 7, count: 7 }, { score: 8, count: 20 },
-      { score: 9, count: 11 }, { score: 10, count: 43 },
-    ],
-    npsScore: "+61",
-    npsNote: "NPS 超過 50 即為「卓越」等級，多數 SaaS 產品落在 30–40 之間。",
-    statCards: [
-      { num: "54%", label: "每篇文章都看" },
-      { num: "94%", label: "多數或每篇都看" },
-      { num: "76%", label: "認為深度「剛好」" },
-      { num: "90%", label: "認為篇幅「剛好」" },
-      { num: "57%", label: "停更會非常失望" },
-      { num: "99%", label: "停更會失望或非常失望" },
-    ],
-    reasonSectionLabel: "為什麼訂閱",
-    reasonSectionHeading: "他們為什麼選擇區塊勢？",
-    reasonIntro: "最多人選的理由，其實跟投資報牌或獨家消息無關——他們想支持這樣的媒體繼續存在。",
-    reasonBars: [
-      { label: "想支持這樣的媒體存在", pct: "39%", width: "100%" },
-      { label: "認同作者的觀點與風格", pct: "29%", width: "73%" },
-      { label: "需要可靠的資訊來源", pct: "24%", width: "61%" },
-      { label: "某幾篇文章寫得很好", pct: "4%", width: "9%" },
-    ],
-    filterTabs: [
-      { key: "all", label: "全部" },
-      { key: "trust", label: "值得信賴" },
-      { key: "easy", label: "深入淺出" },
-      { key: "unique", label: "無可取代" },
-      { key: "warm", label: "有溫度" },
-      { key: "support", label: "想支持" },
-    ],
-    testimonials: [
-      { text: "我認為最難被取代的主因有兩個：《區塊勢》經常從親身經驗切入，告訴使用者「應用為什麼重要」。第二，《區塊勢》能潛移默化地讓讀者從投資人視角，轉變為使用者視角，最終成為真正的 Web3 公民。", score: 10, tag: "unique", sub: "1 年", featured: true },
-      { text: "把原本很硬的監管、法規、金融邏輯，用很生活化的方式講到你一聽就懂，還能順便告訴你「這件事到底會影響誰、你該注意什麼」，而且重點是長期維持資訊來源可靠、判斷不亂飄，讓人願意在雜訊滿天飛的時候當成可信賴的資訊來源。", score: 9, tag: "trust", sub: "1 年", featured: true },
-      { text: "就是跟人的連結、技術／事件放在社會的脈絡吧。瞄過有些電子報，好像寫得很不錯，分析企業、科技、事件等，但我沒興趣，覺得沒靈魂，不知為甚麼要去知道那些事。", score: 10, tag: "warm", sub: "8 年", featured: true },
-      { text: "作者的觀點與風格，對於 Web3 的厚望與堅持，且主題都是有趣的，不會像國內那些幣圈媒體大多環繞在 Fintech 相關的議題（銅臭味太重）。", score: 10, tag: "unique", sub: "4 年" },
-      { text: "專注在這個新科技的發展！我覺得這是在這個科技發展初期，許多人只談錢只談獲利，完全不在乎科技帶來的影響力的時代，很難能可貴的事情。", score: 9, tag: "support", sub: "1 年" },
-      { text: "文章很多，新聞也很多，但被人揉合過的文字卻很少，我喜歡區塊勢有溫度的表達方式！", score: 10, tag: "warm", sub: "4 年" },
-      { text: "區塊勢的文章是經過整理，廢話少的優質內容，讓我這種「非技術開發人員」可以系統化、高效地吸收新知。而不需要從各種雜亂的新聞、論壇、與社交軟體上拼湊資訊。", score: 10, tag: "easy", sub: "1 年" },
-      { text: "也許是明恩這個人吧，你總給我一種和其他幣圈 KOL 很不一樣的感覺。同樣身為 NTUEE 的逃兵，雖然走向不同的道路。", score: 10, tag: "warm", sub: "3 年" },
-      { text: "定期出刊與產業趨勢有關的內容，而且是非投資類型的文章，市面上大多的文章都帶有投資屬性，看了很煩。", score: 10, tag: "unique", sub: "1 年" },
-      { text: "將消化過後的技術或問題，用日常生活經驗來比喻，幫助理解一些圈內發生的事。", score: 10, tag: "easy", sub: "3 年" },
-      { text: "選題與內容的品質突出，不輕易流於媚俗或平庸化。", score: 10, tag: "unique", sub: "3 年" },
-      { text: "勇於各種嘗試的體驗經驗，譬如之前 DeFi 出事，分享身邊好友、社群集思廣益出的自動救援機器人。讓人感覺到互相支援運行的節點。幣圈清流\uD83E\uDD23 是某種讓人很舒服的幣圈歸屬感。", score: 10, tag: "warm", sub: "2 年" },
-      { text: "內容接地氣紮實，作者從本地角度出發思考每期內容。", score: 10, tag: "trust", sub: "8 年" },
-      { text: "可以簡單的例子深入淺出的分析事件或是說明技術；不受市場情緒影響，說出對於事件的真實看法。", score: 9, tag: "trust", sub: "2 年" },
-      { text: "每篇文章都讓我有獨家見解感覺，不是其他網站的外電翻譯文章轉發。", score: 10, tag: "unique", sub: "4 年" },
-      { text: "市場上少有對區塊鏈具有廣度及深度評論分析，且能穩定出刊又容易閱讀的媒體。", score: 10, tag: "trust", sub: "8 年" },
-      { text: "對區塊鏈公共價值的堅持，對人文／民主／社會的關懷，還有對弱勢的體貼。", score: 10, tag: "support", sub: "未知" },
-      { text: "或許很難說是否會被取代，但明恩的寫作風格與內容導向，應該是一般人模仿不來的。", score: 10, tag: "unique", sub: "7 年" },
-      { text: "願意自己實際操作再與聽眾分享，無論過程對或錯或者踩雷，讓我們能避免或者踩雷時也能清楚為什麼？這種經驗的分享很難得過程辛苦，謝謝！", score: 10, tag: "trust", sub: "6 年" },
-      { text: "內容多元，介紹很多新的應用方式、創新模式、穩定幣錢包以及駭客事件等等。就是感受到銘恩很熱血，不斷給我們最好最新的資訊。", score: 10, tag: "warm", sub: "8 年" },
-      { text: "用普通人也能懂的比喻講區塊鏈產業的許多大事件，在我嘗試對別人科普區塊鏈產業時有很大啟發。", score: 10, tag: "easy", sub: "1 年" },
-      { text: "講真話！不只是肉身在寫文章，連內容也是真心話、真實的經歷。", score: 8, tag: "trust", sub: "未知" },
-      { text: "幣圈唯一清流，守備範圍極廣從技術到應用，面面俱到，文字淺顯易懂。", score: 10, tag: "easy", sub: "8 年" },
-      { text: "內容實在、想法前瞻、充滿正能量且有希望、白話好懂、形容或比喻的方法都很平易近人且接地氣。", score: 10, tag: "easy", sub: "未知" },
-      { text: "好懂且感受到「自己『彷彿』跟世界沒有脫節」。", score: 8, tag: "easy", sub: "8 年" },
-      { text: "核心價值不同，對同一件事看到的風景也會很不同。區塊勢是以人文視角出發，帶人去了解區塊鏈的媒體，既保留技術深度，也總是會回扣對於個人的影響。", score: 10, tag: "unique", sub: "未知" },
-      { text: "彙整產業前瞻資訊精確。如果想超越，基本上就必須是在現場自己整理資料並吸收消化的業內人士了吧。", score: 10, tag: "trust", sub: "1 年" },
-      { text: "雖然並沒有準時的把文章給讀完，但讀的每篇文章都能感受到明恩的用心，一直讓區塊勢維持在一個水準上。", score: 10, tag: "support", sub: "2 年" },
-      { text: "文章淺顯易讀能讓非專業人士也能享受閱讀。", score: 9, tag: "easy", sub: "5 年" },
-      { text: "極少數能對區塊鏈能公正、客觀及廣泛評論分析的媒體。", score: 10, tag: "trust", sub: "未知" },
-      { text: "有固定錄音可以在上下班開車時利用時間關注區塊鏈與幣圈最新趨勢。可讓我利用零碎時間吸收新知。", score: 10, tag: "easy", sub: "6 年" },
-      { text: "中性的分析技術與實務間的可能性，很實在，不用擔心背後有其他意圖。", score: 8, tag: "trust", sub: "未知" },
-      { text: "來自自主創作的台灣觀點與繁體中文內容。常見到的其他中文內容只是搬運其他媒體的文字重新剪輯排版，甚至連翻譯都不順，並沒有立論清晰的自我觀點。", score: 10, tag: "unique", sub: "未知" },
-      { text: "This is the most detailed and in-depth article in Traditional Chinese.", score: 8, tag: "trust", sub: "未知" },
-      { text: "所有內容都很平易近人，而且偏應用面居多，比較容易讓朋友知道這個產業到底在做什麼。", score: 9, tag: "easy", sub: "未知" },
-      { text: "內容紮實，相當有觀點，且立論清晰易懂。", score: 8, tag: "trust", sub: "未知" },
-      { text: "區塊勢對公共利益的堅持，讓我可以跟朋友放心推薦。", score: 10, tag: "support", sub: "未知" },
-    ],
-    profileCards: [
-      {
-        title: "年齡分佈",
-        items: [
-          { label: "21 – 30 歲", value: "8%" },
-          { label: "31 – 40 歲", value: "40%" },
-          { label: "41 – 50 歲", value: "29%" },
-          { label: "51 – 60 歲", value: "18%" },
-          { label: "61 歲以上", value: "5%" },
-        ],
-      },
-      {
-        title: "與區塊鏈的關係",
-        items: [
-          { label: "純粹有興趣", value: "48%" },
-          { label: "部分相關", value: "19%" },
-          { label: "這是我的主要工作", value: "13%" },
-          { label: "有興趣轉職", value: "11%" },
-        ],
-      },
-      {
-        title: "訂閱年資",
-        items: [
-          { label: "不到 1 年", value: "6%" },
-          { label: "1 – 3 年", value: "45%" },
-          { label: "4 – 6 年", value: "29%" },
-          { label: "7 年以上", value: "20%" },
-        ],
-      },
-    ],
-    situations: [
-      { label: "例行性閱讀，保持產業了解", pct: "89%", width: "100%" },
-      { label: "想了解新聞事件的來龍去脈", pct: "63%", width: "71%" },
-      { label: "尋找產業發展趨勢的線索", pct: "54%", width: "60%" },
-      { label: "需要理解某個技術概念", pct: "49%", width: "55%" },
-    ],
-  },
-  2025: {
-    label: "2025 年度讀者調查",
-    footerSource: "資料來源：區塊勢 2025 年度內容滿意度調查（97 位付費讀者）",
-    heroStats: [
-      { value: 9.0, decimal: true, label: "平均推薦分數（滿分 10）" },
-      { value: 87, suffix: "%", label: "每篇或多數文章都看" },
-      { value: 97, suffix: "", label: "位付費讀者填答" },
-    ],
-    marqueeQuotes: [
-      "台灣區塊鏈媒體中少數用原創文字的", "電子報內容深入淺出，透明討論潛在風險",
-      "幣圈清流", "不應只侷限於幣價的波動", "認真說人話的區塊鏈媒體",
-      "分享新的實際應用發展", "台灣觀點與繁體中文內容", "深入淺出又接地氣",
-    ],
-    npsData: [
-      { score: 0, count: 0 }, { score: 1, count: 0 }, { score: 2, count: 1 },
-      { score: 3, count: 0 }, { score: 4, count: 0 }, { score: 5, count: 1 },
-      { score: 6, count: 3 }, { score: 7, count: 5 }, { score: 8, count: 22 },
-      { score: 9, count: 14 }, { score: 10, count: 51 },
-    ],
-    npsScore: "+62",
-    npsNote: "NPS 超過 50 即為「卓越」等級，多數 SaaS 產品落在 30–40 之間。",
-    statCards: [
-      { num: "47%", label: "每篇文章都看" },
-      { num: "87%", label: "多數或每篇都看" },
-      { num: "84%", label: "認為深度「剛好」" },
-      { num: "93%", label: "認為篇幅「剛好」" },
-    ],
-    reasonBars: [
-      { label: "例行性閱讀，保持對產業的了解", pct: "87%", width: "100%" },
-      { label: "想了解新聞事件的來龍去脈", pct: "58%", width: "67%" },
-      { label: "需要理解某個技術概念", pct: "51%", width: "58%" },
-      { label: "尋找產業發展趨勢的線索", pct: "48%", width: "55%" },
-      { label: "尋找投資決策的參考依據", pct: "27%", width: "31%" },
-    ],
-    reasonSectionLabel: "使用情境",
-    reasonSectionHeading: "什麼時候會想到區塊勢？",
-    reasonIntro: "讀者告訴我們，區塊勢已經融入了他們的日常資訊生活。",
-    filterTabs: [
-      { key: "all", label: "全部" },
-    ],
-    testimonials: [
-      { text: "台灣區塊鏈媒體中少數用原創的文字、台灣的用詞、台灣人用戶視角來敘述各種鏈上事件，希望繼續保持。", score: 8, tag: "all" },
-      { text: "電子報內容深入淺出，透明討論潛在風險與應對機制。最近比較有感的是「微策略死亡螺旋」的內容。", score: 10, tag: "all" },
-      { text: "我覺得區塊鏈的發展，不應只侷限於幣價的波動，更應該關注其在產業或產品層面是否具有實用價值。相信大部分區塊勢的訂閱者也有相同體認。", score: 10, tag: "all" },
-      { text: "最喜歡分享一些新的實際應用發展，譬如 Coinbase 錢包可以導入法幣、MetaMask 推出金融卡，用 Apple Pay 連動錢包。也喜歡產業的發展、監管方面的報導。", score: 10, tag: "all" },
-      { text: "Your writing is among the best in the market. I particularly like your explanation of current events with reference to previous history and its development, that's something very important but severely lacking in the media.", score: 10, tag: "all" },
-      { text: "針砭時事，不受利益綁架。", score: 8, tag: "all" },
-      { text: "針對有應用價值、技術創新與突破、以及產業影響力的事件或專案，習慣第一時間找區塊勢。", score: 9, tag: "all" },
-      { text: "在川普發幣暴漲這篇有提到《Read Write Own》作者指出監管不當才是迷因幣亂象的根源，這種追溯脈絡的寫法很有幫助。", score: 10, tag: "all" },
-      { text: "喜歡每週 Podcast 訪談，有產業來賓、司法專業人員等，可以增加許多新資訊。謝謝區塊勢，祝新的一年越來越棒喔。", score: 10, tag: "all" },
-      { text: "大多都很喜歡，尤其智慧合約、數位身分、鏈上應用等方面的介紹。", score: 10, tag: "all" },
-    ],
-    profileCards: [
-      {
-        title: "年齡分佈",
-        items: [
-          { label: "21 – 30 歲", value: "5%" },
-          { label: "31 – 40 歲", value: "46%" },
-          { label: "41 – 50 歲", value: "35%" },
-          { label: "51 – 60 歲", value: "9%" },
-          { label: "61 歲以上", value: "3%" },
-        ],
-      },
-      {
-        title: "與區塊鏈的關係",
-        items: [
-          { label: "純粹有興趣", value: "61%" },
-          { label: "部分相關", value: "15%" },
-          { label: "有興趣轉職", value: "12%" },
-          { label: "這是我的主要工作", value: "11%" },
-        ],
-      },
-      {
-        title: "訂閱年資",
-        items: [
-          { label: "不到 1 年", value: "1%" },
-          { label: "1 – 3 年", value: "64%" },
-          { label: "4 – 6 年", value: "16%" },
-          { label: "7 年以上", value: "19%" },
-        ],
-      },
-    ],
-  },
-  2024: {
-    label: "2024 年度讀者調查",
-    footerSource: "資料來源：區塊勢 2024 年度內容滿意度調查（166 位付費讀者）",
-    heroStats: [
-      { value: 8.9, decimal: true, label: "平均推薦分數（滿分 10）" },
-      { value: 81, suffix: "%", label: "每篇或多數文章都看" },
-      { value: 166, suffix: "", label: "位付費讀者填答" },
-    ],
-    marqueeQuotes: [
-      "帶領我認識到不同的世界與思維", "用淺顯易懂的語言來比喻", "很難得的事情",
-      "科技和商業進展的很快", "讓人直觀的理解趨勢發展的脈絡", "習慣第一時間找區塊勢",
-      "穩定且持續的高品質內容", "圖文並茂很能幫助理解",
-    ],
-    npsData: [
-      { score: 0, count: 0 }, { score: 1, count: 0 }, { score: 2, count: 0 },
-      { score: 3, count: 0 }, { score: 4, count: 0 }, { score: 5, count: 2 },
-      { score: 6, count: 2 }, { score: 7, count: 15 }, { score: 8, count: 41 },
-      { score: 9, count: 30 }, { score: 10, count: 76 },
-    ],
-    npsScore: "+61",
-    npsNote: "NPS 超過 50 即為「卓越」等級，多數 SaaS 產品落在 30–40 之間。",
-    statCards: [
-      { num: "37%", label: "每篇文章都看" },
-      { num: "81%", label: "多數或每篇都看" },
-      { num: "81%", label: "認為深度「剛好」" },
-      { num: "90%", label: "認為篇幅「剛好」" },
-    ],
-    reasonBars: [
-      { label: "對產業發展感興趣", pct: "82%", width: "100%" },
-      { label: "有在投資", pct: "57%", width: "70%" },
-      { label: "純粹支持", pct: "39%", width: "48%" },
-      { label: "和工作直接相關", pct: "18%", width: "22%" },
-      { label: "想進入相關產業", pct: "17%", width: "21%" },
-    ],
-    reasonSectionLabel: "訂閱原因",
-    reasonSectionHeading: "他們為什麼訂閱區塊勢？",
-    reasonIntro: "最多人是因為對產業發展感興趣而訂閱，而非單純為了投資。",
-    filterTabs: [
-      { key: "all", label: "全部" },
-      { key: "diff", label: "獨特之處" },
-      { key: "like", label: "最喜歡" },
-    ],
-    testimonials: [
-      { text: "先進的科技如果不是為了解決人類的問題，或創造出新的價值，就不容易引起一般大眾的共鳴。與其讓多數人去學會科技，不如讓少數人善用說故事的能力來轉譯。明恩就是那個說故事的人。", score: 10, tag: "diff", featured: true },
-      { text: "區塊勢的文章與選題常常能夠帶我認識到不同的世界與思維，有些議題是非常值得大家一起思辨的，尤其明恩總是用淺顯易懂的語言來比喻或說明，這是非常難得的事情。", score: 10, tag: "diff" },
-      { text: "系統性的整理問題脈絡並提供應對方式，對於不甚了解的人較容易消化吸收。即使是部分不易理解，但當類似問題再發生時，可以藉由回溯以往來理解。", score: 10, tag: "like" },
-      { text: "非常喜歡明恩的文字，可以讓人直觀的理解趨勢發展的脈絡。", score: 10, tag: "like" },
-      { text: "主持人的聲線讓人覺得很舒服，長時間聽也不會覺得聽覺疲勞。加上主持人本身就是投資人，完全能在牛熊轉換期間，聽到主持人持平且理性的見解。", score: 9, tag: "like" },
-      { text: "可以收到最新的新知。大多是上下班開車時收聽，對於長期接觸區塊鏈讀者，很方便利用通勤時間吸收新知。", score: 9, tag: "like" },
-      { text: "區塊勢與其他媒體的區別在於其文章能夠以聽的方式呈現，提供了極大的方便性。此外，經常邀請專業來賓參與討論各類區塊鏈時事話題，使人受益匪淺。", score: 9, tag: "diff" },
-      { text: "很喜歡圖文並茂，文字＋圖像很能幫助理解及內化。", score: 8, tag: "like" },
-      { text: "穩定且持續的高品質內容輸出，這本身就是最難被取代的護城河。", score: 10, tag: "diff" },
-      { text: "明恩有很好的能力將困難的主題用簡單的方式解釋，讓一般不懂技術的人也能理解。這是非常稀缺的能力。", score: 10, tag: "diff" },
-      { text: "區塊勢的文章總能讓我在繁忙的生活中，找到一個安靜的角落去思考科技與社會的未來。", score: 10, tag: "diff" },
-    ],
-    profileCards: [
-      {
-        title: "年齡分佈",
-        items: [
-          { label: "21 – 30 歲", value: "26%" },
-          { label: "31 – 40 歲", value: "36%" },
-          { label: "41 – 50 歲", value: "27%" },
-          { label: "51 – 60 歲", value: "9%" },
-          { label: "61 歲以上", value: "2%" },
-        ],
-      },
-      {
-        title: "訂閱年資",
-        items: [
-          { label: "不到 1 年", value: "2%" },
-          { label: "1 – 3 年", value: "78%" },
-          { label: "4 – 6 年", value: "20%" },
-        ],
-      },
-    ],
-  },
-  2023: {
-    label: "2023 年度讀者調查",
-    footerSource: "資料來源：區塊勢 2023 年度滿意度問卷（181 位讀者）",
-    heroStats: [
-      { value: 4.7, decimal: true, label: "整體滿意度（滿分 5）" },
-      { value: 82, suffix: "%", label: "曾推薦區塊勢給他人" },
-      { value: 181, suffix: "", label: "位讀者填答" },
-    ],
-    marqueeQuotes: [
-      "用淺顯易懂的語言來比喻", "區塊鏈媒體的清流", "深入淺出又切合時事",
-      "最扎實、中立且認真的區塊鏈媒體", "知識含量既廣又深但敘述簡單易懂",
-      "入門區塊鏈不可或缺的翻譯蒟蒻", "把高門檻的知識用淺顯易懂的方式講解",
-      "Web3 導遊", "對內容充滿愛的獨立媒體",
-    ],
-    satisfactionData: { avg: 4.7, max: 5, dist: { 5: 136, 4: 39, 3: 5, 2: 1 }, recommendedPct: 82 },
-    statCards: [
-      { num: "90%", label: "認為篇幅「剛好」" },
-      { num: "76%", label: "認為深度「剛好」" },
-      { num: "82%", label: "曾推薦給其他人" },
-      { num: "75%", label: "整體滿意度 5 分（滿分）" },
-    ],
-    filterTabs: [
-      { key: "all", label: "全部" },
-      { key: "invite", label: "推薦語" },
-      { key: "like", label: "最喜歡" },
-    ],
-    testimonials: [
-      { text: "熊市或許會讓人對很多區塊鏈資訊來源產生質疑，但區塊勢仍然是我持續 follow 的少數區塊鏈媒體。區塊勢或許不是最吸引眼球，但絕對是最扎實、中立且認真的區塊鏈媒體！", tag: "invite", featured: true },
-      { text: "區塊勢的文章與選題常常能夠帶我認識到不同的世界與思維，有些議題是非常值得大家一起思辨的，尤其明恩總是用淺顯易懂的語言來比喻或說明，這是非常難得的事情，也是我最喜歡區塊勢的地方。", tag: "like" },
-      { text: "區塊世界資訊海量，透過區塊勢客觀、中立的掃描、萃取並轉譯，可以更快、更容易接觸、消化並吸收。如果想要快速有效率的獲取區塊鏈高品質的資訊，區塊勢絕對是唯一選擇。", tag: "invite" },
-      { text: "區塊勢是最貼近生活沒有中國用詞的台灣白話文媒體，充滿知識卻不生硬，是值得支持的好媒體。", tag: "invite" },
-      { text: "區塊勢能把很難懂又複雜的概念用生活中的例子讓我們理解，Podcast 很會抓中來賓的重點，主持功力一流。", tag: "invite" },
-      { text: "在多數人還在口沫橫飛地念著他們自己都不太懂的專有名詞時，明恩能夠寫出深入淺出的文章真的相當厲害。", tag: "like" },
-      { text: "每每幣圈發生大事，或是老闆又腦洞大開的問了區塊鏈技術相關問題時，我總是會先找區塊勢的文章當作一個起點，能夠在最短的時間內獲得 70% 的訊息，真的屢試不爽。", tag: "invite" },
-      { text: "感謝一直提供真人語音錄製的服務，本身是視障人士，也仰賴這項功能。在充斥各種機器聲 TTS 的年代還願意花時間真人錄製聲音，真的讓人覺得很溫暖。", tag: "like" },
-      { text: "區塊勢內容深入淺出，能將概念化繁為簡，搭配高品質的主題選擇，是所有想要體驗智識愉悅者的必讀刊物。", tag: "invite" },
-      { text: "唯一理性的區塊鏈媒體，沒有 BIAS、沒有 FOMO，只有滿滿讓讀者安心的內容。", tag: "invite" },
-      { text: "特別讚賞明恩持續輸出以及總是具備深度的同時，仍然維持易讀性。特別喜歡在與現實生活的比對與舉例，很幫助理解。", tag: "like" },
-      { text: "區塊勢用心打造一個資訊管道，讓原本身為傳統法律人的我，有方向可去探索區塊鏈世界及其無限可能的未來，光這點就絕對值得成為終身會員。", tag: "invite" },
-      { text: "深入淺出又切合時事發展，引領進入區塊鏈的世界，否則資訊這麼多又雜真的不知道從何下手理解。", tag: "like" },
-      { text: "區塊勢的內容不只是投資，更多的是區塊鏈產業知識以及與現實世界的互動，知識含量既廣又深，但敘述卻能簡單易懂。", tag: "invite" },
-      { text: "區塊勢的內容生動有趣，作者擅長用讀者過去生活中的各種事物為例，深入淺出的把未來可能的生活樣貌，引介給現在的讀者。", tag: "invite" },
-      { text: "在加密貨幣的寒冬，我也在 FTX 損失了一萬美金，靠著區塊勢的信心加持，讓我繼續對這領域保有興趣以及展望。", tag: "like" },
-      { text: "喜歡明恩聽完來賓的對話後，能夠馬上翻譯或者提問，幫助我更瞭解來賓的對話內容。", tag: "like" },
-    ],
-    profileCards: [
-      {
-        title: "年齡分佈",
-        items: [
-          { label: "21 – 30 歲", value: "28%" },
-          { label: "31 – 40 歲", value: "45%" },
-          { label: "41 – 50 歲", value: "21%" },
-          { label: "51 – 60 歲", value: "5%" },
-          { label: "61 歲以上", value: "1%" },
-        ],
-      },
-      {
-        title: "與區塊鏈的關係",
-        items: [
-          { label: "純粹有興趣", value: "59%" },
-          { label: "這是我的主要工作", value: "23%" },
-          { label: "介於有和沒有之間", value: "19%" },
-        ],
-      },
-      {
-        title: "訂閱年資",
-        items: [
-          { label: "不到 1 年", value: "9%" },
-          { label: "1 – 3 年", value: "78%" },
-          { label: "4 – 6 年", value: "13%" },
-        ],
-      },
-    ],
-  },
-  2021: {
-    label: "2021 年度讀者調查",
-    footerSource: "資料來源：區塊勢 2021 年度內容滿意度調查（76 位付費讀者）",
-    heroStats: [
-      { value: 4.6, decimal: true, label: "整體滿意度（滿分 5）" },
-      { value: 75, suffix: "%", label: "認為深度「剛好」" },
-      { value: 76, suffix: "", label: "位付費讀者填答" },
-    ],
-    marqueeQuotes: [
-      "看得懂又專業的資訊來源", "帶領我們一同成長的夥伴", "說人話的區塊鏈媒體",
-      "十分鐘增加十幾小時的知識", "中文世界入門的最佳電子報",
-      "喜歡真誠與透明，保有科學態度和赤子之心", "深入淺出的敘述方式",
-      "冷靜的觀點讓你不被激情動搖",
-    ],
-    satisfactionData: { avg: 4.6, max: 5, dist: { 5: 49, 4: 23, 3: 2, 1: 1 }, recommendedPct: 92 },
-    statCards: [
-      { num: "84%", label: "認為篇幅「剛好」" },
-      { num: "75%", label: "認為深度「剛好」" },
-      { num: "92%", label: "推薦意願 4 分以上（滿分 5）" },
-      { num: "64%", label: "整體滿意度 5 分（滿分）" },
-    ],
-    filterTabs: [
-      { key: "all", label: "全部" },
-      { key: "invite", label: "推薦語" },
-      { key: "like", label: "最喜歡" },
-    ],
-    testimonials: [
-      { text: "想瞭解區塊鏈的人必讀！「看得懂」跟「專業」通常兩者互斥，但區塊勢是一個「看得懂」又「專業」的資訊來源，省下你的研究時間，十分鐘增加十幾小時的知識。", tag: "invite", featured: true },
-      { text: "深入淺出的敘述方式，很喜歡你在廣播中會舉各種例子來幫助我們了解專業者在講什麼。你是帶領我們一同成長的夥伴，而不是老師，這種感覺很好，有種幫我們發聲的感覺。", tag: "like" },
-      { text: "明恩簡約的文字可以讓你在 10 分鐘內掌握區塊鏈世界的最新動態；明恩冷靜的觀點可以讓你在 10 分鐘後不被區塊鏈世界的激情動搖。", tag: "invite" },
-      { text: "打從 2017 年，區塊勢從不間斷教我區塊鏈相關知識。我讀過區塊勢的所有文章，聽過所有 Podcast，本來不懂的議題變得有所掌握，本來就懂的議題，變得會用白話向別人解釋。", tag: "invite" },
-      { text: "區塊勢是我唯一訂閱的知識型自媒體，雖然自己是資訊背景，但區塊鏈不管是產業、市場還是技術，變化都更迅速，也很容易需要跨領域的理解，因此非常需要從不同管道獲取知識。", tag: "like" },
-      { text: "在這個區塊鏈的大浪潮底下，時時都有各種新技術發布，靠自己去追太累了。花一點小預算，讓專業的區塊勢深入淺出地讓你跟上最重要的議題，好比有一位特助幫你研究分析。", tag: "invite" },
-      { text: "喜歡區塊勢的真誠與透明，對技術同時保有科學態度和赤子之心。", tag: "like" },
-      { text: "最喜歡區塊勢把相關的資訊串連起來，用自己的想法和圖表來表達。", tag: "like" },
-      { text: "用說人話的方式深入淺出的解釋技術，且用圖像增加印象來提高理解度。", tag: "like" },
-      { text: "區塊勢簡單明暸的把複雜的東西轉化讓讀者了解。", tag: "invite" },
-      { text: "中文世界入門的最佳電子報，絕對值得訂閱！", tag: "invite" },
-      { text: "想要持續且高效的掌握區塊鏈的發展歷史和未來趨勢，又沒有廣告和商業推銷等雜訊，區塊勢是您不二選擇。", tag: "invite" },
-      { text: "最喜歡區塊勢能多面向地提供區塊鏈的發展趨勢以及有深度的解析。", tag: "like" },
-      { text: "舉的例子很生活化，比較好懂。", tag: "like" },
-    ],
-    profileCards: [
-      {
-        title: "年齡分佈",
-        items: [
-          { label: "21 – 30 歲", value: "18%" },
-          { label: "31 – 40 歲", value: "38%" },
-          { label: "41 – 50 歲", value: "21%" },
-          { label: "51 歲以上", value: "9%" },
-        ],
-      },
-      {
-        title: "與區塊鏈的關係",
-        items: [
-          { label: "純粹有興趣", value: "75%" },
-          { label: "這是我的主要工作", value: "25%" },
-        ],
-      },
-      {
-        title: "訂閱年資",
-        items: [
-          { label: "不到 1 年", value: "17%" },
-          { label: "1 – 3 年", value: "82%" },
-        ],
-      },
-    ],
-  },
+const yearsData={
+2025:{responses:84,summary:'平均推薦 8.9（滿分 10）',stats:[{num:'8.9',label:'平均推薦（滿分 10）'},{num:'94%',label:'多數或每篇都看'},{num:'90%',label:'篇幅剛好'}],testimonials:[
+{t:"我認為最難被取代的主因有兩個：《區塊勢》經常從親身經驗切入，告訴使用者「應用為什麼重要」。第二，《區塊勢》能潛移默化地讓讀者從投資人視角，轉變為使用者視角，最終成為真正的 Web3 公民。",tag:"部分相關｜訂閱 1 年"},
+{t:"把原本很硬的監管、法規、金融邏輯，用很生活化的方式講到你一聽就懂，還能順便告訴你「這件事到底會影響誰、你該注意什麼」，讓人願意在雜訊滿天飛的時候當成可信賴的資訊來源。",tag:"業內人士｜訂閱 1 年"},
+{t:"就是跟人的連結、技術／事件放在社會的脈絡吧。瞄過有些電子報，好像寫得很不錯，分析企業、科技、事件等，但我沒興趣，覺得沒靈魂。",tag:"業內人士｜訂閱 8 年"},
+{t:"作者的觀點與風格，對於 Web3 的厚望與堅持，且主題都是有趣的，不會像國內那些幣圈媒體大多環繞在 Fintech 相關的議題。",tag:"部分相關｜訂閱 4 年"},
+{t:"文章很多，新聞也很多，但被人揉合過的文字卻很少，我喜歡區塊勢有溫度的表達方式！",tag:"非業內人士｜訂閱 4 年"},
+{t:"區塊勢的文章是經過整理，廢話少的優質內容，讓我這種「非技術開發人員」可以系統化、高效地吸收新知。",tag:"非業內人士｜訂閱 1 年"},
+{t:"幣圈唯一清流，守備範圍極廣從技術到應用，面面俱到，文字淺顯易懂。",tag:"部分相關｜訂閱 8 年"},
+{t:"勇於各種嘗試的體驗經驗，讓人感覺到互相支援運行的節點。是某種讓人很舒服的幣圈歸屬感。",tag:"業內人士｜訂閱 2 年"},
+{t:"核心價值不同，對同一件事看到的風景也會很不同。區塊勢是以人文視角出發，帶人去了解區塊鏈的媒體。",tag:"非業內人士"},
+{t:"市場上少有對區塊鏈具有廣度及深度評論分析，且能穩定出刊又容易閱讀的媒體。",tag:"非業內人士｜訂閱 8 年"},
+{t:"來自自主創作的台灣觀點與繁體中文內容。常見的其他中文內容只是搬運重新剪輯排版，並沒有立論清晰的自我觀點。",tag:"非業內人士"},
+{t:"對區塊鏈公共價值的堅持，對人文／民主／社會的關懷，還有對弱勢的體貼。",tag:"非業內人士"}
+]},
+2024:{responses:97,summary:'平均推薦 9.0（滿分 10）',stats:[{num:'9.0',label:'平均推薦（滿分 10）'},{num:'88%',label:'多數或每篇都看'},{num:'93%',label:'篇幅剛好'}],testimonials:[
+{t:"區塊鏈的發展，不應只侷限於幣價的波動，更應該關注其在產業或產品層面是否具有實用價值。最關注的是區塊鏈在金融領域的應用，例如加密貨幣支付更普及、跨國匯款更便捷等等。",tag:"非業內人士"},
+{t:"台灣區塊鏈媒體中少數用原創的文字、台灣的用詞、台灣人用戶視角來敘述各種鏈上事件，希望繼續保持。",tag:"部分相關｜訂閱 5 年"},
+{t:"電子報內容深入淺出，透明討論潛在風險與應對機制。最後回歸到核心本質，決定維持自己 DCA 比特幣到冷錢包，因為那是可以自主掌握的。",tag:"非業內人士"},
+{t:"最喜歡分享一些新的實際應用發展，譬如 Coinbase 錢包導入法幣、MetaMask 推出金融卡。也喜歡產業的發展、監管方面的新聞。",tag:"非業內人士｜訂閱 3 年"},
+{t:"喜歡每週 Podcast 訪談，有產業來賓、司法專業人員等，可以增加許多新資訊。",tag:"非業內人士"},
+{t:"第一印象是零知識證明，幾篇文章中都有提到，而且的確也說明得很清楚。",tag:"有興趣轉職"},
+{t:"One of the only content from an Asian perspective, very straightforward language, no fluff.",tag:"部分相關"},
+{t:"最喜歡明恩對重大區塊鏈新聞／訴訟判決的分析，可作為未來世界政府對此領域態度的參考。",tag:"非業內人士｜訂閱 2 年"}
+]},
+2023:{responses:166,summary:'平均推薦 8.9（滿分 10）',stats:[{num:'8.9',label:'平均推薦（滿分 10）'},{num:'81%',label:'多數或每篇都看'},{num:'90%',label:'篇幅剛好'}],testimonials:[
+{t:"區塊勢就像我的另一雙眼睛，幫著我一起關注區塊鏈世界的發展。",tag:"非業內人士｜訂閱 3 年"},
+{t:"系統性的整理問題脈絡並提供應對方式，對於不甚了解的人較容易消化吸收。藉由區塊勢可以幫我聚焦在重要的議題，對於不在 Web3 工作的人來說，實在是方便又容易取得資訊的管道。",tag:"非業內人士"},
+{t:"先進的科技如果不是為了解決人類的問題或創造出新的價值，就不容易引起一般大眾的共鳴和注意。謝謝區塊勢一直作為這個橋樑。",tag:"非業內人士"},
+{t:"主持人的聲線讓人覺得很舒服，長時間聽也不會覺得聽覺疲勞。總是能約到產業人士受訪，加上主持人本身就是投資人，完全能在牛熊轉換期間感受到心情變化。",tag:"非業內人士｜訂閱 2 年"},
+{t:"非常喜歡明恩的文字，可以讓人直觀的理解趨勢發展的脈絡。",tag:"部分相關｜訂閱 4 年"},
+{t:"區塊勢與其他媒體的區別在於其文章能夠以聽的方式呈現，提供了極大的方便性。經常邀請專業來賓參與討論各類區塊鏈時事。",tag:"非業內人士"},
+{t:"很喜歡圖文並茂，文字加圖像很能幫助理解及內化。",tag:"部分相關"},
+{t:"討論公共財、DAO、基礎建設等，這些主題很少有中文媒體在談。",tag:"業內人士｜訂閱 5 年"},
+{t:"可以收到最新的新知。大多是上下班開車時收聽，非常方便。",tag:"非業內人士｜訂閱 1 年"}
+]},
+2022:{responses:181,summary:'平均推薦 9.4（滿分 10）',stats:[{num:'9.4',label:'平均推薦（滿分 10）'},{num:'97%',label:'曾推薦給其他人'},{num:'90%',label:'篇幅剛好'}],testimonials:[
+{t:"既廣且深、對內容充滿愛的獨立媒體。",tag:"非業內人士"},
+{t:"區塊勢讓我了解各種區塊鏈實際應用，貼近日常生活，而不是單純報導各種幣。",tag:"非業內人士"},
+{t:"深入淺出又切合時事發展，引領進入區塊鏈的世界，否則資訊這麼多又雜，真的不知道從何下手理解。",tag:"非業內人士｜訂閱 2 年"},
+{t:"最喜歡對區塊鏈深入淺出的說明及不同產業介紹，而不是單純的說幣。",tag:"部分相關"},
+{t:"容易了解，分析與敘述上比較有脈絡。",tag:"非業內人士"},
+{t:"圖文的部分很容易了解吸收。",tag:"非業內人士｜訂閱 1 年"},
+{t:"作為大眾內容，廣度與深度俱佳。",tag:"業內人士｜訂閱 3 年"},
+{t:"期待能看到更多像當初首次讀到 Compound、DAI、零知識證明、SBT、RetroPGF 那樣腦洞大開的衝擊感。",tag:"業內人士｜訂閱 4 年"},
+{t:"不是那麼早期的幣圈仔，喜歡用縱橫古今的方式讓大家理解其中的歷史脈絡。",tag:"非業內人士｜訂閱 2 年"}
+]},
+2020:{responses:76,summary:'平均推薦 9.2（滿分 10）',stats:[{num:'9.2',label:'平均推薦（滿分 10）'},{num:'84%',label:'篇幅剛好'},{num:'93%',label:'曾推薦給其他人'}],testimonials:[
+{t:"區塊勢是我唯一訂閱的知識型自媒體。區塊鏈不管是產業、市場還是技術，變化都很迅速，非常需要從不同管道獲取知識。",tag:"部分相關｜訂閱 2 年"},
+{t:"花一點小預算，讓專業的區塊勢深入淺出地讓你跟上最重要的議題，好比有一位特助幫你研究分析區塊鏈最前沿的知識。",tag:"非業內人士"},
+{t:"區塊勢就像是一本書的書摘一樣，使讀者能在短時間內掌握一件時事的前因後果及相關脈絡，讓人省下不少資料蒐集篩選的時間。",tag:"非業內人士｜訂閱 1 年"},
+{t:"最喜歡區塊勢把相關的資訊串連起來，用自己的想法和圖表來表達。",tag:"非業內人士"},
+{t:"用說人話的方式深入淺出的解釋技術，且用圖像增加印象來提高理解度。",tag:"非業內人士｜訂閱 2 年"},
+{t:"想入門區塊鏈與加密貨幣，第一塊敲門磚就在這！完全見證了明恩的選題、內容與文筆如何與時俱進。",tag:"非業內人士｜訂閱 3 年"},
+{t:"在這個區塊鏈的大浪潮底下，時時都有各種新技術發布，靠自己去追太累了。",tag:"非業內人士"}
+]}
 };
-
-// ===================================================================
-// APP STATE & HELPERS
-// ===================================================================
-const YEARS = Object.keys(REPORTS).map(Number).sort((a, b) => b - a);
-const LATEST_YEAR = YEARS[0];
-let currentYear = null;
-let currentTestimonialFilter = 'all';
-
-function getYearFromHash() {
-  const match = location.hash.match(/#\/(\d{4})/);
-  if (match && REPORTS[match[1]]) return Number(match[1]);
-  return LATEST_YEAR;
-}
-
-// ===================================================================
-// SIDEBAR
-// ===================================================================
-const sidebar = document.getElementById('sidebar');
-const sidebarOverlay = document.getElementById('sidebarOverlay');
-const sidebarToggle = document.getElementById('sidebarToggle');
-const sidebarClose = document.getElementById('sidebarClose');
-const sidebarYears = document.getElementById('sidebarYears');
-
-function openSidebar() {
-  sidebar.classList.add('open');
-  sidebarOverlay.classList.add('open');
-}
-function closeSidebar() {
-  sidebar.classList.remove('open');
-  sidebarOverlay.classList.remove('open');
-}
-
-sidebarToggle.addEventListener('click', openSidebar);
-sidebarOverlay.addEventListener('click', closeSidebar);
-sidebarClose.addEventListener('click', closeSidebar);
-
-function renderSidebar(activeYear) {
-  sidebarYears.innerHTML = '';
-  YEARS.forEach(year => {
-    const item = document.createElement('a');
-    item.className = 'sidebar-year-item' + (year === activeYear ? ' active' : '');
-    item.href = `#/${year}`;
-    item.innerHTML = `
-      <div>
-        <div class="sidebar-year-num">${year}</div>
-        <div class="sidebar-year-label">${REPORTS[year].label}</div>
-      </div>
-    `;
-    item.addEventListener('click', () => closeSidebar());
-    sidebarYears.appendChild(item);
-  });
-}
-
-// ===================================================================
-// RENDER HELPERS
-// ===================================================================
-function buildReasonRows(items) {
-  return items.map(r => `
-    <div class="reason-row reveal">
-      <div class="reason-label-row">
-        <span class="reason-label">${r.label}</span>
-        <span class="reason-pct">${r.pct}</span>
-      </div>
-      <div class="reason-track"><div class="reason-fill" data-width="${r.width}"></div></div>
-    </div>
-  `).join('');
-}
-
-function renderTestimonials(testimonials, filter) {
-  const grid = document.getElementById('testimonialsGrid');
-  grid.innerHTML = '';
-  const filtered = filter === 'all' ? testimonials : testimonials.filter(t => t.tag === filter);
-  filtered.forEach(t => {
-    const card = document.createElement('div');
-    card.className = 'testimonial-card' + (t.featured ? ' testimonial-featured' : '');
-    let metaHTML = '';
-    if (t.sub || t.score != null) {
-      const parts = [];
-      if (t.sub) parts.push(`<span>訂閱 ${t.sub}</span>`);
-      if (t.score != null) parts.push(`<span class="testimonial-score">推薦 ${t.score}/10</span>`);
-      metaHTML = `<div class="testimonial-meta">${parts.join('')}</div>`;
-    }
-    card.innerHTML = `
-      <div class="testimonial-text">${t.text}</div>
-      ${metaHTML}
-    `;
-    grid.appendChild(card);
-  });
-}
-
-// ===================================================================
-// MAIN RENDER
-// ===================================================================
-function renderReport(year) {
-  const data = REPORTS[year];
-  if (!data) return;
-  currentYear = year;
-  currentTestimonialFilter = 'all';
-
-  // Update page title
-  document.title = `區塊勢 — ${data.label}`;
-
-  // Hero
-  document.getElementById('heroLabel').textContent = data.label;
-  const heroStats = document.getElementById('heroStats');
-  heroStats.innerHTML = data.heroStats.map(s => `
-    <div>
-      <div class="hero-stat-num" data-count="${s.value}" ${s.decimal ? 'data-decimal="true"' : ''} ${s.suffix ? `data-suffix="${s.suffix}"` : ''}>0</div>
-      <div class="hero-stat-label">${s.label}</div>
-    </div>
-  `).join('');
-
-  // Marquee
-  const marqueeTrack = document.getElementById('marqueeTrack');
-  const marqueeHTML = data.marqueeQuotes.map(q => `<div class="marquee-item">「<em>${q}</em>」</div>`).join('');
-  marqueeTrack.innerHTML = marqueeHTML + marqueeHTML;
-
-  // NPS / Satisfaction section
-  const npsSection = document.getElementById('npsSection');
-  if (data.npsData) {
-    const maxCount = Math.max(...data.npsData.map(d => d.count));
-    const barsHTML = data.npsData.map(d => {
-      const cls = d.score <= 6 ? 'detractor' : d.score <= 8 ? 'passive' : 'promoter';
-      const h = d.count > 0 ? (d.count / maxCount * 160) + 'px' : '4px';
-      return `<div class="nps-bar-group">
-        <div class="nps-bar-count">${d.count || ''}</div>
-        <div class="nps-bar ${cls}" data-height="${h}"></div>
-        <div class="nps-bar-score">${d.score}</div>
-      </div>`;
-    }).join('');
-    npsSection.innerHTML = `
-      <section class="nps-section reveal">
-        <div class="section-label">推薦意願</div>
-        <div class="section-heading">他們有多願意推薦區塊勢？</div>
-        <div class="section-body">
-          NPS（淨推薦值）是衡量用戶忠誠度的國際標準指標。9–10 分為推薦者，7–8 分為被動者，0–6 分為批評者。
-        </div>
-        <div class="nps-bar-container">${barsHTML}</div>
-        <div class="nps-legend">
-          <span class="leg-p">推薦者 (9-10)</span>
-          <span class="leg-n">被動者 (7-8)</span>
-          <span class="leg-d">批評者 (0-6)</span>
-        </div>
-        <div style="text-align: center; margin-top: 3rem;">
-          <div class="nps-big">${data.npsScore}</div>
-          <div class="nps-big-label">Net Promoter Score</div>
-          <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.8rem; max-width: 400px; margin-left: auto; margin-right: auto;">
-            ${data.npsNote}
-          </p>
-        </div>
-      </section>`;
-  } else if (data.satisfactionData) {
-    const sd = data.satisfactionData;
-    const total = Object.values(sd.dist).reduce((a, b) => a + b, 0);
-    const distHTML = Object.entries(sd.dist).sort((a, b) => b[0] - a[0]).map(([score, count]) => {
-      const pct = Math.round(count / total * 100);
-      return `<div class="reason-row reveal">
-        <div class="reason-label-row">
-          <span class="reason-label">${score} 分</span>
-          <span class="reason-pct">${pct}%（${count} 人）</span>
-        </div>
-        <div class="reason-track"><div class="reason-fill" data-width="${pct}%"></div></div>
-      </div>`;
-    }).join('');
-    npsSection.innerHTML = `
-      <section class="nps-section reveal">
-        <div class="section-label">滿意度</div>
-        <div class="section-heading">讀者有多滿意區塊勢？</div>
-        <div class="section-body">
-          整體滿意度採 1–5 分量表，${sd.recommendedPct}% 的讀者曾推薦區塊勢給他人。
-        </div>
-        <div style="text-align: center; margin-bottom: 3rem;">
-          <div class="nps-big">${sd.avg}</div>
-          <div class="nps-big-label">整體滿意度（滿分 ${sd.max}）</div>
-        </div>
-        <div class="reason-bars" style="max-width: 500px; margin: 0 auto;">
-          ${distHTML}
-        </div>
-      </section>`;
-  } else {
-    npsSection.innerHTML = '';
-  }
-
-  // Stat cards
-  document.getElementById('statGrid').innerHTML = data.statCards.map(s => `
-    <div class="stat-card reveal">
-      <div class="stat-card-num">${s.num}</div>
-      <div class="stat-card-label">${s.label}</div>
-    </div>
-  `).join('');
-
-  // Reason / Why Subscribe section
-  const reasonSection = document.getElementById('reasonSection');
-  if (data.reasonBars && data.reasonBars.length > 0) {
-    const sLabel = data.reasonSectionLabel || '為什麼訂閱';
-    const sHeading = data.reasonSectionHeading || '他們為什麼選擇區塊勢？';
-    const sIntro = data.reasonIntro || '';
-    reasonSection.innerHTML = `
-      <section class="reveal">
-        <div class="section-label">${sLabel}</div>
-        <div class="section-heading">${sHeading}</div>
-        <div class="section-body">${sIntro}</div>
-        <div class="reason-bars">${buildReasonRows(data.reasonBars)}</div>
-      </section>
-      <div class="divider"></div>`;
-  } else {
-    reasonSection.innerHTML = '';
-  }
-
-  // Filter tabs
-  const filterTabs = document.getElementById('filterTabs');
-  filterTabs.innerHTML = data.filterTabs.map((t, i) => `
-    <button class="filter-tab${i === 0 ? ' active' : ''}" data-filter="${t.key}">${t.label}</button>
-  `).join('');
-
-  // Testimonials
-  renderTestimonials(data.testimonials, 'all');
-
-  // Profile cards
-  document.getElementById('profileGrid').innerHTML = data.profileCards.map(card => `
-    <div class="profile-card reveal">
-      <h3>${card.title}</h3>
-      ${card.items.map(item => `
-        <div class="profile-item">
-          <span class="profile-item-label">${item.label}</span>
-          <span class="profile-item-value">${item.value}</span>
-        </div>
-      `).join('')}
-    </div>
-  `).join('');
-
-  // Situations (only some years have this)
-  const situationSection = document.getElementById('situationSection');
-  if (data.situations && data.situations.length > 0) {
-    situationSection.innerHTML = `
-      <section class="reveal">
-        <div class="section-label">使用情境</div>
-        <div class="section-heading">什麼時候會想到區塊勢？</div>
-        <div class="section-body">
-          讀者告訴我們，區塊勢已經融入了他們的日常資訊生活。
-        </div>
-        <div class="reason-bars">${buildReasonRows(data.situations)}</div>
-      </section>
-      <div class="divider"></div>`;
-  } else {
-    situationSection.innerHTML = '';
-  }
-
-  // Footer
-  document.getElementById('footerSource').textContent = data.footerSource;
-
-  // Sidebar active state
-  renderSidebar(year);
-
-  // Re-init observers & animations
-  initObservers();
-}
-
-// ===================================================================
-// OBSERVERS (re-initialized on each render)
-// ===================================================================
-let revealObserver = null;
-let counterObserver = null;
-
-function initObservers() {
-  // Disconnect previous
-  if (revealObserver) revealObserver.disconnect();
-  if (counterObserver) counterObserver.disconnect();
-
-  // Scroll reveal
-  revealObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-        entry.target.querySelectorAll('.nps-bar').forEach(bar => {
-          bar.style.height = bar.dataset.height;
-        });
-        entry.target.querySelectorAll('.reason-fill').forEach(bar => {
-          bar.style.width = bar.dataset.width;
-        });
-      }
-    });
-  }, { threshold: 0.15 });
-
-  document.querySelectorAll('.reveal').forEach(el => {
-    el.classList.remove('visible');
-    revealObserver.observe(el);
-  });
-
-  // Counter animation
-  counterObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting && !entry.target.dataset.animated) {
-        entry.target.dataset.animated = 'true';
-        const target = parseFloat(entry.target.dataset.count);
-        const decimal = entry.target.dataset.decimal === 'true';
-        const suffix = entry.target.dataset.suffix || '';
-        const duration = 1500;
-        const start = performance.now();
-        function update(now) {
-          const elapsed = now - start;
-          const progress = Math.min(elapsed / duration, 1);
-          const eased = 1 - Math.pow(1 - progress, 3);
-          const current = eased * target;
-          entry.target.textContent = (decimal ? current.toFixed(1) : Math.round(current)) + suffix;
-          if (progress < 1) requestAnimationFrame(update);
-        }
-        requestAnimationFrame(update);
-      }
-    });
-  }, { threshold: 0.5 });
-
-  document.querySelectorAll('[data-count]').forEach(el => {
-    delete el.dataset.animated;
-    counterObserver.observe(el);
-  });
-}
-
-// ===================================================================
-// FILTER TABS (delegated)
-// ===================================================================
-document.getElementById('filterTabs').addEventListener('click', e => {
-  if (!e.target.classList.contains('filter-tab')) return;
-  document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
-  e.target.classList.add('active');
-  currentTestimonialFilter = e.target.dataset.filter;
-  renderTestimonials(REPORTS[currentYear].testimonials, currentTestimonialFilter);
+const yearOrder=[2025,2024,2023,2022,2020];
+const tabsC=document.getElementById('yearTabs'),panelsC=document.getElementById('yearPanels');
+yearOrder.forEach((y,i)=>{
+  const d=yearsData[y],cell=document.createElement('div');
+  cell.className='timeline-cell'+(i===0?' active':'');
+  cell.dataset.year=y;
+  cell.innerHTML=`<div class="tl-year">${y}</div><div class="tl-stat">${d.summary}</div>`;
+  cell.addEventListener('click',()=>switchYear(y));
+  tabsC.appendChild(cell);
 });
-
-// ===================================================================
-// ROUTING
-// ===================================================================
-function navigate() {
-  const year = getYearFromHash();
-  if (year === currentYear) return;
-  window.scrollTo({ top: 0, behavior: 'instant' });
-  renderReport(year);
+yearOrder.forEach((y,i)=>{
+  const d=yearsData[y],panel=document.createElement('div');
+  panel.className='year-panel'+(i===0?' active':'');
+  panel.id='panel-'+y;
+  const statsH=d.stats.map(s=>`<div class="stat-card"><div class="stat-card-num">${s.num}</div><div class="stat-card-label">${s.label}</div></div>`).join('');
+  const initN=6;
+  const allCards=d.testimonials.map(item=>{const txt=typeof item==='string'?item:item.t;const tag=typeof item==='object'&&item.tag?`<span class="testimonial-tag">${item.tag}</span>`:'';return `<div class="testimonial-card"><div class="testimonial-text">${txt}</div><div class="testimonial-meta"><span>${y} 年度調查</span>${tag}</div></div>`});
+  panel.innerHTML=`<div class="stat-grid" style="margin-top:2rem">${statsH}</div><h3 class="panel-heading">${y} 年讀者回饋</h3><div class="testimonials-grid" id="grid-${y}">${allCards.slice(0,initN).join('')}</div>${allCards.length>initN?`<button class="load-more-btn" data-year="${y}" data-showing="${initN}">展開更多回饋</button>`:''}`;
+  panelsC.appendChild(panel);
+});
+document.addEventListener('click',e=>{
+  if(!e.target.classList.contains('load-more-btn'))return;
+  const y=parseInt(e.target.dataset.year),d=yearsData[y],grid=document.getElementById('grid-'+y);
+  grid.innerHTML=d.testimonials.map(item=>{const txt=typeof item==='string'?item:item.t;const tag=typeof item==='object'&&item.tag?`<span class="testimonial-tag">${item.tag}</span>`:'';return `<div class="testimonial-card"><div class="testimonial-text">${txt}</div><div class="testimonial-meta"><span>${y} 年度調查</span>${tag}</div></div>`}).join('');
+  e.target.remove();
+});
+function switchYear(y){
+  document.querySelectorAll('.timeline-cell').forEach(c=>c.classList.toggle('active',c.dataset.year==y));
+  document.querySelectorAll('.year-panel').forEach(p=>p.classList.toggle('active',p.id==='panel-'+y));
 }
-
-window.addEventListener('hashchange', navigate);
-
-// Initial render
-renderReport(getYearFromHash());
+const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');e.target.querySelectorAll('.reason-fill').forEach(b=>{b.style.width=b.dataset.width})}})},{threshold:.15});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+function animateCounter(el,target,suffix){
+  const dur=1500,start=performance.now(),dec=String(target).includes('.');
+  function upd(now){const p=Math.min((now-start)/dur,1),e=1-Math.pow(1-p,3),c=e*target;el.textContent=(dec?c.toFixed(1):Math.round(c))+(suffix||'');if(p<1)requestAnimationFrame(upd)}
+  requestAnimationFrame(upd);
+}
+const cObs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting&&!e.target.dataset.animated){e.target.dataset.animated='true';animateCounter(e.target,parseFloat(e.target.dataset.count),e.target.dataset.suffix||'')}})},{threshold:.5});
+document.querySelectorAll('[data-count]').forEach(el=>cObs.observe(el));
 </script>
 </body>
 </html>

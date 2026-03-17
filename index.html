@@ -716,25 +716,8 @@ footer {
   <div class="marquee-track" id="marqueeTrack"></div>
 </div>
 
-<!-- NPS SECTION -->
-<section class="nps-section reveal">
-  <div class="section-label">推薦意願</div>
-  <div class="section-heading">「你願意向朋友推薦區塊勢嗎？」</div>
-  <div class="section-body" style="margin: 0 auto 2rem;">
-    我們直接問了。0 到 10 分，讀者的答案長這樣。
-  </div>
-  <div class="nps-bar-container" id="npsChart"></div>
-  <div class="nps-legend">
-    <span class="leg-d">批評者（0–6）</span>
-    <span class="leg-n">被動者（7–8）</span>
-    <span class="leg-p">推薦者（9–10）</span>
-  </div>
-  <div style="margin-top: 3rem;">
-    <div class="nps-big" id="npsBig"></div>
-    <div class="nps-big-label">Net Promoter Score</div>
-    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.8rem; max-width: 400px; margin-left: auto; margin-right: auto;" id="npsNote"></p>
-  </div>
-</section>
+<!-- NPS / SATISFACTION SECTION (rendered by JS) -->
+<div id="npsSection"></div>
 
 <div class="divider"></div>
 
@@ -750,15 +733,8 @@ footer {
 
 <div class="divider"></div>
 
-<!-- WHY SUBSCRIBE -->
-<section class="reveal">
-  <div class="section-label">付費原因</div>
-  <div class="section-heading">他們為什麼願意付錢？</div>
-  <div class="section-body" id="reasonIntro"></div>
-  <div class="reason-bars" id="reasonBars"></div>
-</section>
-
-<div class="divider"></div>
+<!-- WHY SUBSCRIBE (conditional) -->
+<div id="reasonSection"></div>
 
 <!-- TESTIMONIALS -->
 <section class="reveal" id="testimonials">
@@ -785,15 +761,8 @@ footer {
 
 <div class="divider"></div>
 
-<!-- SITUATIONS -->
-<section class="reveal">
-  <div class="section-label">使用情境</div>
-  <div class="section-heading">什麼時候會想到區塊勢？</div>
-  <div class="section-body">
-    讀者告訴我們，區塊勢已經融入了他們的日常資訊生活。
-  </div>
-  <div class="reason-bars" id="situationBars"></div>
-</section>
+<!-- SITUATIONS (conditional) -->
+<div id="situationSection"></div>
 
 <!-- CTA -->
 <section class="cta-section reveal">
@@ -815,7 +784,7 @@ footer {
 
 <script>
 // ===================================================================
-// REPORTS DATA — add new years by copying the 2025 structure below
+// REPORTS DATA
 // ===================================================================
 const REPORTS = {
   2025: {
@@ -847,6 +816,8 @@ const REPORTS = {
       { num: "57%", label: "停更會非常失望" },
       { num: "99%", label: "停更會失望或非常失望" },
     ],
+    reasonSectionLabel: "為什麼訂閱",
+    reasonSectionHeading: "他們為什麼選擇區塊勢？",
     reasonIntro: "最多人選的理由，其實跟投資報牌或獨家消息無關——他們想支持這樣的媒體繼續存在。",
     reasonBars: [
       { label: "想支持這樣的媒體存在", pct: "39%", width: "100%" },
@@ -938,12 +909,307 @@ const REPORTS = {
       { label: "需要理解某個技術概念", pct: "49%", width: "55%" },
     ],
   },
-  // ---------------------------------------------------------------
-  // TODO: Add more years here. Copy the 2025 structure and fill data.
-  // Example:
-  // 2024: { label: "2024 年度讀者調查", ... },
-  // 2023: { label: "2023 年度讀者調查", ... },
-  // ---------------------------------------------------------------
+  2024: {
+    label: "2024 年度讀者調查",
+    footerSource: "資料來源：區塊勢 2024 年度內容滿意度調查（97 位付費讀者）",
+    heroStats: [
+      { value: 9.0, decimal: true, label: "平均推薦分數（滿分 10）" },
+      { value: 87, suffix: "%", label: "每篇或多數文章都看" },
+      { value: 97, suffix: "", label: "位付費讀者填答" },
+    ],
+    marqueeQuotes: [
+      "台灣區塊鏈媒體中少數用原創文字的", "電子報內容深入淺出，透明討論潛在風險",
+      "幣圈清流", "不應只侷限於幣價的波動", "認真說人話的區塊鏈媒體",
+      "分享新的實際應用發展", "台灣觀點與繁體中文內容", "深入淺出又接地氣",
+    ],
+    npsData: [
+      { score: 0, count: 0 }, { score: 1, count: 0 }, { score: 2, count: 1 },
+      { score: 3, count: 0 }, { score: 4, count: 0 }, { score: 5, count: 1 },
+      { score: 6, count: 3 }, { score: 7, count: 5 }, { score: 8, count: 22 },
+      { score: 9, count: 14 }, { score: 10, count: 51 },
+    ],
+    npsScore: "+62",
+    npsNote: "NPS 超過 50 即為「卓越」等級，多數 SaaS 產品落在 30–40 之間。",
+    statCards: [
+      { num: "47%", label: "每篇文章都看" },
+      { num: "87%", label: "多數或每篇都看" },
+      { num: "84%", label: "認為深度「剛好」" },
+      { num: "93%", label: "認為篇幅「剛好」" },
+    ],
+    reasonBars: [
+      { label: "例行性閱讀，保持對產業的了解", pct: "87%", width: "100%" },
+      { label: "想了解新聞事件的來龍去脈", pct: "58%", width: "67%" },
+      { label: "需要理解某個技術概念", pct: "51%", width: "58%" },
+      { label: "尋找產業發展趨勢的線索", pct: "48%", width: "55%" },
+      { label: "尋找投資決策的參考依據", pct: "27%", width: "31%" },
+    ],
+    reasonSectionLabel: "使用情境",
+    reasonSectionHeading: "什麼時候會想到區塊勢？",
+    reasonIntro: "讀者告訴我們，區塊勢已經融入了他們的日常資訊生活。",
+    filterTabs: [
+      { key: "all", label: "全部" },
+    ],
+    testimonials: [
+      { text: "台灣區塊鏈媒體中少數用原創的文字、台灣的用詞、台灣人用戶視角來敘述各種鏈上事件，希望繼續保持。", score: 8, tag: "all" },
+      { text: "電子報內容深入淺出，透明討論潛在風險與應對機制。最近比較有感的是「微策略死亡螺旋」的內容。", score: 10, tag: "all" },
+      { text: "我覺得區塊鏈的發展，不應只侷限於幣價的波動，更應該關注其在產業或產品層面是否具有實用價值。相信大部分區塊勢的訂閱者也有相同體認。", score: 10, tag: "all" },
+      { text: "最喜歡分享一些新的實際應用發展，譬如 Coinbase 錢包可以導入法幣、MetaMask 推出金融卡，用 Apple Pay 連動錢包。也喜歡產業的發展、監管方面的報導。", score: 10, tag: "all" },
+      { text: "Your writing is among the best in the market. I particularly like your explanation of current events with reference to previous history and its development, that's something very important but severely lacking in the media.", score: 10, tag: "all" },
+      { text: "針砭時事，不受利益綁架。", score: 8, tag: "all" },
+      { text: "針對有應用價值、技術創新與突破、以及產業影響力的事件或專案，習慣第一時間找區塊勢。", score: 9, tag: "all" },
+      { text: "在川普發幣暴漲這篇有提到《Read Write Own》作者指出監管不當才是迷因幣亂象的根源，這種追溯脈絡的寫法很有幫助。", score: 10, tag: "all" },
+      { text: "喜歡每週 Podcast 訪談，有產業來賓、司法專業人員等，可以增加許多新資訊。謝謝區塊勢，祝新的一年越來越棒喔。", score: 10, tag: "all" },
+      { text: "大多都很喜歡，尤其智慧合約、數位身分、鏈上應用等方面的介紹。", score: 10, tag: "all" },
+    ],
+    profileCards: [
+      {
+        title: "年齡分佈",
+        items: [
+          { label: "21 – 30 歲", value: "5%" },
+          { label: "31 – 40 歲", value: "46%" },
+          { label: "41 – 50 歲", value: "35%" },
+          { label: "51 – 60 歲", value: "9%" },
+          { label: "61 歲以上", value: "3%" },
+        ],
+      },
+      {
+        title: "與區塊鏈的關係",
+        items: [
+          { label: "純粹有興趣", value: "61%" },
+          { label: "部分相關", value: "15%" },
+          { label: "有興趣轉職", value: "12%" },
+          { label: "這是我的主要工作", value: "11%" },
+        ],
+      },
+      {
+        title: "訂閱年資",
+        items: [
+          { label: "不到 1 年", value: "1%" },
+          { label: "1 – 3 年", value: "64%" },
+          { label: "4 – 6 年", value: "16%" },
+          { label: "7 年以上", value: "19%" },
+        ],
+      },
+    ],
+  },
+  2023: {
+    label: "2023 年度讀者調查",
+    footerSource: "資料來源：區塊勢 2023 年度內容滿意度調查（166 位付費讀者）",
+    heroStats: [
+      { value: 8.9, decimal: true, label: "平均推薦分數（滿分 10）" },
+      { value: 81, suffix: "%", label: "每篇或多數文章都看" },
+      { value: 166, suffix: "", label: "位付費讀者填答" },
+    ],
+    marqueeQuotes: [
+      "帶領我認識到不同的世界與思維", "用淺顯易懂的語言來比喻", "很難得的事情",
+      "科技和商業進展的很快", "讓人直觀的理解趨勢發展的脈絡", "習慣第一時間找區塊勢",
+      "穩定且持續的高品質內容", "圖文並茂很能幫助理解",
+    ],
+    npsData: [
+      { score: 0, count: 0 }, { score: 1, count: 0 }, { score: 2, count: 0 },
+      { score: 3, count: 0 }, { score: 4, count: 0 }, { score: 5, count: 2 },
+      { score: 6, count: 2 }, { score: 7, count: 15 }, { score: 8, count: 41 },
+      { score: 9, count: 30 }, { score: 10, count: 76 },
+    ],
+    npsScore: "+61",
+    npsNote: "NPS 超過 50 即為「卓越」等級，多數 SaaS 產品落在 30–40 之間。",
+    statCards: [
+      { num: "37%", label: "每篇文章都看" },
+      { num: "81%", label: "多數或每篇都看" },
+      { num: "81%", label: "認為深度「剛好」" },
+      { num: "90%", label: "認為篇幅「剛好」" },
+    ],
+    reasonBars: [
+      { label: "對產業發展感興趣", pct: "82%", width: "100%" },
+      { label: "有在投資", pct: "57%", width: "70%" },
+      { label: "純粹支持", pct: "39%", width: "48%" },
+      { label: "和工作直接相關", pct: "18%", width: "22%" },
+      { label: "想進入相關產業", pct: "17%", width: "21%" },
+    ],
+    reasonSectionLabel: "訂閱原因",
+    reasonSectionHeading: "他們為什麼訂閱區塊勢？",
+    reasonIntro: "最多人是因為對產業發展感興趣而訂閱，而非單純為了投資。",
+    filterTabs: [
+      { key: "all", label: "全部" },
+      { key: "diff", label: "獨特之處" },
+      { key: "like", label: "最喜歡" },
+    ],
+    testimonials: [
+      { text: "先進的科技如果不是為了解決人類的問題，或創造出新的價值，就不容易引起一般大眾的共鳴。與其讓多數人去學會科技，不如讓少數人善用說故事的能力來轉譯。明恩就是那個說故事的人。", score: 10, tag: "diff", featured: true },
+      { text: "區塊勢的文章與選題常常能夠帶我認識到不同的世界與思維，有些議題是非常值得大家一起思辨的，尤其明恩總是用淺顯易懂的語言來比喻或說明，這是非常難得的事情。", score: 10, tag: "diff" },
+      { text: "系統性的整理問題脈絡並提供應對方式，對於不甚了解的人較容易消化吸收。即使是部分不易理解，但當類似問題再發生時，可以藉由回溯以往來理解。", score: 10, tag: "like" },
+      { text: "非常喜歡明恩的文字，可以讓人直觀的理解趨勢發展的脈絡。", score: 10, tag: "like" },
+      { text: "主持人的聲線讓人覺得很舒服，長時間聽也不會覺得聽覺疲勞。加上主持人本身就是投資人，完全能在牛熊轉換期間，聽到主持人持平且理性的見解。", score: 9, tag: "like" },
+      { text: "可以收到最新的新知。大多是上下班開車時收聽，對於長期接觸區塊鏈讀者，很方便利用通勤時間吸收新知。", score: 9, tag: "like" },
+      { text: "區塊勢與其他媒體的區別在於其文章能夠以聽的方式呈現，提供了極大的方便性。此外，經常邀請專業來賓參與討論各類區塊鏈時事話題，使人受益匪淺。", score: 9, tag: "diff" },
+      { text: "很喜歡圖文並茂，文字＋圖像很能幫助理解及內化。", score: 8, tag: "like" },
+      { text: "穩定且持續的高品質內容輸出，這本身就是最難被取代的護城河。", score: 10, tag: "diff" },
+      { text: "明恩有很好的能力將困難的主題用簡單的方式解釋，讓一般不懂技術的人也能理解。這是非常稀缺的能力。", score: 10, tag: "diff" },
+      { text: "區塊勢的文章總能讓我在繁忙的生活中，找到一個安靜的角落去思考科技與社會的未來。", score: 10, tag: "diff" },
+    ],
+    profileCards: [
+      {
+        title: "年齡分佈",
+        items: [
+          { label: "21 – 30 歲", value: "26%" },
+          { label: "31 – 40 歲", value: "36%" },
+          { label: "41 – 50 歲", value: "27%" },
+          { label: "51 – 60 歲", value: "9%" },
+          { label: "61 歲以上", value: "2%" },
+        ],
+      },
+      {
+        title: "訂閱年資",
+        items: [
+          { label: "不到 1 年", value: "2%" },
+          { label: "1 – 3 年", value: "78%" },
+          { label: "4 – 6 年", value: "20%" },
+        ],
+      },
+    ],
+  },
+  2022: {
+    label: "2022 年度讀者調查",
+    footerSource: "資料來源：區塊勢 2022 年度滿意度問卷（181 位讀者）",
+    heroStats: [
+      { value: 4.7, decimal: true, label: "整體滿意度（滿分 5）" },
+      { value: 82, suffix: "%", label: "曾推薦區塊勢給他人" },
+      { value: 181, suffix: "", label: "位讀者填答" },
+    ],
+    marqueeQuotes: [
+      "用淺顯易懂的語言來比喻", "區塊鏈媒體的清流", "深入淺出又切合時事",
+      "最扎實、中立且認真的區塊鏈媒體", "知識含量既廣又深但敘述簡單易懂",
+      "入門區塊鏈不可或缺的翻譯蒟蒻", "把高門檻的知識用淺顯易懂的方式講解",
+      "Web3 導遊", "對內容充滿愛的獨立媒體",
+    ],
+    satisfactionData: { avg: 4.7, max: 5, dist: { 5: 136, 4: 39, 3: 5, 2: 1 }, recommendedPct: 82 },
+    statCards: [
+      { num: "90%", label: "認為篇幅「剛好」" },
+      { num: "76%", label: "認為深度「剛好」" },
+      { num: "82%", label: "曾推薦給其他人" },
+      { num: "75%", label: "整體滿意度 5 分（滿分）" },
+    ],
+    filterTabs: [
+      { key: "all", label: "全部" },
+      { key: "invite", label: "推薦語" },
+      { key: "like", label: "最喜歡" },
+    ],
+    testimonials: [
+      { text: "熊市或許會讓人對很多區塊鏈資訊來源產生質疑，但區塊勢仍然是我持續 follow 的少數區塊鏈媒體。區塊勢或許不是最吸引眼球，但絕對是最扎實、中立且認真的區塊鏈媒體！", tag: "invite", featured: true },
+      { text: "區塊勢的文章與選題常常能夠帶我認識到不同的世界與思維，有些議題是非常值得大家一起思辨的，尤其明恩總是用淺顯易懂的語言來比喻或說明，這是非常難得的事情，也是我最喜歡區塊勢的地方。", tag: "like" },
+      { text: "區塊世界資訊海量，透過區塊勢客觀、中立的掃描、萃取並轉譯，可以更快、更容易接觸、消化並吸收。如果想要快速有效率的獲取區塊鏈高品質的資訊，區塊勢絕對是唯一選擇。", tag: "invite" },
+      { text: "區塊勢是最貼近生活沒有中國用詞的台灣白話文媒體，充滿知識卻不生硬，是值得支持的好媒體。", tag: "invite" },
+      { text: "區塊勢能把很難懂又複雜的概念用生活中的例子讓我們理解，Podcast 很會抓中來賓的重點，主持功力一流。", tag: "invite" },
+      { text: "在多數人還在口沫橫飛地念著他們自己都不太懂的專有名詞時，明恩能夠寫出深入淺出的文章真的相當厲害。", tag: "like" },
+      { text: "每每幣圈發生大事，或是老闆又腦洞大開的問了區塊鏈技術相關問題時，我總是會先找區塊勢的文章當作一個起點，能夠在最短的時間內獲得 70% 的訊息，真的屢試不爽。", tag: "invite" },
+      { text: "感謝一直提供真人語音錄製的服務，本身是視障人士，也仰賴這項功能。在充斥各種機器聲 TTS 的年代還願意花時間真人錄製聲音，真的讓人覺得很溫暖。", tag: "like" },
+      { text: "區塊勢內容深入淺出，能將概念化繁為簡，搭配高品質的主題選擇，是所有想要體驗智識愉悅者的必讀刊物。", tag: "invite" },
+      { text: "唯一理性的區塊鏈媒體，沒有 BIAS、沒有 FOMO，只有滿滿讓讀者安心的內容。", tag: "invite" },
+      { text: "特別讚賞明恩持續輸出以及總是具備深度的同時，仍然維持易讀性。特別喜歡在與現實生活的比對與舉例，很幫助理解。", tag: "like" },
+      { text: "區塊勢用心打造一個資訊管道，讓原本身為傳統法律人的我，有方向可去探索區塊鏈世界及其無限可能的未來，光這點就絕對值得成為終身會員。", tag: "invite" },
+      { text: "深入淺出又切合時事發展，引領進入區塊鏈的世界，否則資訊這麼多又雜真的不知道從何下手理解。", tag: "like" },
+      { text: "區塊勢的內容不只是投資，更多的是區塊鏈產業知識以及與現實世界的互動，知識含量既廣又深，但敘述卻能簡單易懂。", tag: "invite" },
+      { text: "區塊勢的內容生動有趣，作者擅長用讀者過去生活中的各種事物為例，深入淺出的把未來可能的生活樣貌，引介給現在的讀者。", tag: "invite" },
+      { text: "在加密貨幣的寒冬，我也在 FTX 損失了一萬美金，靠著區塊勢的信心加持，讓我繼續對這領域保有興趣以及展望。", tag: "like" },
+      { text: "喜歡明恩聽完來賓的對話後，能夠馬上翻譯或者提問，幫助我更瞭解來賓的對話內容。", tag: "like" },
+    ],
+    profileCards: [
+      {
+        title: "年齡分佈",
+        items: [
+          { label: "21 – 30 歲", value: "28%" },
+          { label: "31 – 40 歲", value: "45%" },
+          { label: "41 – 50 歲", value: "21%" },
+          { label: "51 – 60 歲", value: "5%" },
+          { label: "61 歲以上", value: "1%" },
+        ],
+      },
+      {
+        title: "與區塊鏈的關係",
+        items: [
+          { label: "純粹有興趣", value: "59%" },
+          { label: "這是我的主要工作", value: "23%" },
+          { label: "介於有和沒有之間", value: "19%" },
+        ],
+      },
+      {
+        title: "訂閱年資",
+        items: [
+          { label: "不到 1 年", value: "9%" },
+          { label: "1 – 3 年", value: "78%" },
+          { label: "4 – 6 年", value: "13%" },
+        ],
+      },
+    ],
+  },
+  2020: {
+    label: "2020 年度讀者調查",
+    footerSource: "資料來源：區塊勢 2020 年度內容滿意度調查（76 位付費讀者）",
+    heroStats: [
+      { value: 4.6, decimal: true, label: "整體滿意度（滿分 5）" },
+      { value: 75, suffix: "%", label: "認為深度「剛好」" },
+      { value: 76, suffix: "", label: "位付費讀者填答" },
+    ],
+    marqueeQuotes: [
+      "看得懂又專業的資訊來源", "帶領我們一同成長的夥伴", "說人話的區塊鏈媒體",
+      "十分鐘增加十幾小時的知識", "中文世界入門的最佳電子報",
+      "喜歡真誠與透明，保有科學態度和赤子之心", "深入淺出的敘述方式",
+      "冷靜的觀點讓你不被激情動搖",
+    ],
+    satisfactionData: { avg: 4.6, max: 5, dist: { 5: 49, 4: 23, 3: 2, 1: 1 }, recommendedPct: 92 },
+    statCards: [
+      { num: "84%", label: "認為篇幅「剛好」" },
+      { num: "75%", label: "認為深度「剛好」" },
+      { num: "92%", label: "推薦意願 4 分以上（滿分 5）" },
+      { num: "64%", label: "整體滿意度 5 分（滿分）" },
+    ],
+    filterTabs: [
+      { key: "all", label: "全部" },
+      { key: "invite", label: "推薦語" },
+      { key: "like", label: "最喜歡" },
+    ],
+    testimonials: [
+      { text: "想瞭解區塊鏈的人必讀！「看得懂」跟「專業」通常兩者互斥，但區塊勢是一個「看得懂」又「專業」的資訊來源，省下你的研究時間，十分鐘增加十幾小時的知識。", tag: "invite", featured: true },
+      { text: "深入淺出的敘述方式，很喜歡你在廣播中會舉各種例子來幫助我們了解專業者在講什麼。你是帶領我們一同成長的夥伴，而不是老師，這種感覺很好，有種幫我們發聲的感覺。", tag: "like" },
+      { text: "明恩簡約的文字可以讓你在 10 分鐘內掌握區塊鏈世界的最新動態；明恩冷靜的觀點可以讓你在 10 分鐘後不被區塊鏈世界的激情動搖。", tag: "invite" },
+      { text: "打從 2017 年，區塊勢從不間斷教我區塊鏈相關知識。我讀過區塊勢的所有文章，聽過所有 Podcast，本來不懂的議題變得有所掌握，本來就懂的議題，變得會用白話向別人解釋。", tag: "invite" },
+      { text: "區塊勢是我唯一訂閱的知識型自媒體，雖然自己是資訊背景，但區塊鏈不管是產業、市場還是技術，變化都更迅速，也很容易需要跨領域的理解，因此非常需要從不同管道獲取知識。", tag: "like" },
+      { text: "在這個區塊鏈的大浪潮底下，時時都有各種新技術發布，靠自己去追太累了。花一點小預算，讓專業的區塊勢深入淺出地讓你跟上最重要的議題，好比有一位特助幫你研究分析。", tag: "invite" },
+      { text: "喜歡區塊勢的真誠與透明，對技術同時保有科學態度和赤子之心。", tag: "like" },
+      { text: "最喜歡區塊勢把相關的資訊串連起來，用自己的想法和圖表來表達。", tag: "like" },
+      { text: "用說人話的方式深入淺出的解釋技術，且用圖像增加印象來提高理解度。", tag: "like" },
+      { text: "區塊勢簡單明暸的把複雜的東西轉化讓讀者了解。", tag: "invite" },
+      { text: "中文世界入門的最佳電子報，絕對值得訂閱！", tag: "invite" },
+      { text: "想要持續且高效的掌握區塊鏈的發展歷史和未來趨勢，又沒有廣告和商業推銷等雜訊，區塊勢是您不二選擇。", tag: "invite" },
+      { text: "最喜歡區塊勢能多面向地提供區塊鏈的發展趨勢以及有深度的解析。", tag: "like" },
+      { text: "舉的例子很生活化，比較好懂。", tag: "like" },
+    ],
+    profileCards: [
+      {
+        title: "年齡分佈",
+        items: [
+          { label: "21 – 30 歲", value: "18%" },
+          { label: "31 – 40 歲", value: "38%" },
+          { label: "41 – 50 歲", value: "21%" },
+          { label: "51 歲以上", value: "9%" },
+        ],
+      },
+      {
+        title: "與區塊鏈的關係",
+        items: [
+          { label: "純粹有興趣", value: "75%" },
+          { label: "這是我的主要工作", value: "25%" },
+        ],
+      },
+      {
+        title: "訂閱年資",
+        items: [
+          { label: "不到 1 年", value: "17%" },
+          { label: "1 – 3 年", value: "82%" },
+        ],
+      },
+    ],
+  },
 };
 
 // ===================================================================
@@ -1021,12 +1287,16 @@ function renderTestimonials(testimonials, filter) {
   filtered.forEach(t => {
     const card = document.createElement('div');
     card.className = 'testimonial-card' + (t.featured ? ' testimonial-featured' : '');
+    let metaHTML = '';
+    if (t.sub || t.score != null) {
+      const parts = [];
+      if (t.sub) parts.push(`<span>訂閱 ${t.sub}</span>`);
+      if (t.score != null) parts.push(`<span class="testimonial-score">推薦 ${t.score}/10</span>`);
+      metaHTML = `<div class="testimonial-meta">${parts.join('')}</div>`;
+    }
     card.innerHTML = `
       <div class="testimonial-text">${t.text}</div>
-      <div class="testimonial-meta">
-        <span>訂閱 ${t.sub}</span>
-        <span class="testimonial-score">推薦 ${t.score}/10</span>
-      </div>
+      ${metaHTML}
     `;
     grid.appendChild(card);
   });
@@ -1057,32 +1327,73 @@ function renderReport(year) {
   // Marquee
   const marqueeTrack = document.getElementById('marqueeTrack');
   const marqueeHTML = data.marqueeQuotes.map(q => `<div class="marquee-item">「<em>${q}</em>」</div>`).join('');
-  marqueeTrack.innerHTML = marqueeHTML + marqueeHTML; // duplicate for seamless loop
+  marqueeTrack.innerHTML = marqueeHTML + marqueeHTML;
 
-  // NPS chart
-  const npsChart = document.getElementById('npsChart');
-  npsChart.innerHTML = '';
-  const maxCount = Math.max(...data.npsData.map(d => d.count));
-  data.npsData.forEach(d => {
-    const group = document.createElement('div');
-    group.className = 'nps-bar-group';
-    const countEl = document.createElement('div');
-    countEl.className = 'nps-bar-count';
-    countEl.textContent = d.count || '';
-    const bar = document.createElement('div');
-    const cls = d.score <= 6 ? 'detractor' : d.score <= 8 ? 'passive' : 'promoter';
-    bar.className = `nps-bar ${cls}`;
-    bar.dataset.height = d.count > 0 ? (d.count / maxCount * 160) + 'px' : '4px';
-    const label = document.createElement('div');
-    label.className = 'nps-bar-score';
-    label.textContent = d.score;
-    group.appendChild(countEl);
-    group.appendChild(bar);
-    group.appendChild(label);
-    npsChart.appendChild(group);
-  });
-  document.getElementById('npsBig').textContent = data.npsScore;
-  document.getElementById('npsNote').textContent = data.npsNote;
+  // NPS / Satisfaction section
+  const npsSection = document.getElementById('npsSection');
+  if (data.npsData) {
+    const maxCount = Math.max(...data.npsData.map(d => d.count));
+    const barsHTML = data.npsData.map(d => {
+      const cls = d.score <= 6 ? 'detractor' : d.score <= 8 ? 'passive' : 'promoter';
+      const h = d.count > 0 ? (d.count / maxCount * 160) + 'px' : '4px';
+      return `<div class="nps-bar-group">
+        <div class="nps-bar-count">${d.count || ''}</div>
+        <div class="nps-bar ${cls}" data-height="${h}"></div>
+        <div class="nps-bar-score">${d.score}</div>
+      </div>`;
+    }).join('');
+    npsSection.innerHTML = `
+      <section class="nps-section reveal">
+        <div class="section-label">推薦意願</div>
+        <div class="section-heading">他們有多願意推薦區塊勢？</div>
+        <div class="section-body">
+          NPS（淨推薦值）是衡量用戶忠誠度的國際標準指標。9–10 分為推薦者，7–8 分為被動者，0–6 分為批評者。
+        </div>
+        <div class="nps-bar-container">${barsHTML}</div>
+        <div class="nps-legend">
+          <span class="leg-p">推薦者 (9-10)</span>
+          <span class="leg-n">被動者 (7-8)</span>
+          <span class="leg-d">批評者 (0-6)</span>
+        </div>
+        <div style="text-align: center; margin-top: 3rem;">
+          <div class="nps-big">${data.npsScore}</div>
+          <div class="nps-big-label">Net Promoter Score</div>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.8rem; max-width: 400px; margin-left: auto; margin-right: auto;">
+            ${data.npsNote}
+          </p>
+        </div>
+      </section>`;
+  } else if (data.satisfactionData) {
+    const sd = data.satisfactionData;
+    const total = Object.values(sd.dist).reduce((a, b) => a + b, 0);
+    const distHTML = Object.entries(sd.dist).sort((a, b) => b[0] - a[0]).map(([score, count]) => {
+      const pct = Math.round(count / total * 100);
+      return `<div class="reason-row reveal">
+        <div class="reason-label-row">
+          <span class="reason-label">${score} 分</span>
+          <span class="reason-pct">${pct}%（${count} 人）</span>
+        </div>
+        <div class="reason-track"><div class="reason-fill" data-width="${pct}%"></div></div>
+      </div>`;
+    }).join('');
+    npsSection.innerHTML = `
+      <section class="nps-section reveal">
+        <div class="section-label">滿意度</div>
+        <div class="section-heading">讀者有多滿意區塊勢？</div>
+        <div class="section-body">
+          整體滿意度採 1–5 分量表，${sd.recommendedPct}% 的讀者曾推薦區塊勢給他人。
+        </div>
+        <div style="text-align: center; margin-bottom: 3rem;">
+          <div class="nps-big">${sd.avg}</div>
+          <div class="nps-big-label">整體滿意度（滿分 ${sd.max}）</div>
+        </div>
+        <div class="reason-bars" style="max-width: 500px; margin: 0 auto;">
+          ${distHTML}
+        </div>
+      </section>`;
+  } else {
+    npsSection.innerHTML = '';
+  }
 
   // Stat cards
   document.getElementById('statGrid').innerHTML = data.statCards.map(s => `
@@ -1092,9 +1403,23 @@ function renderReport(year) {
     </div>
   `).join('');
 
-  // Reason bars
-  document.getElementById('reasonIntro').textContent = data.reasonIntro;
-  document.getElementById('reasonBars').innerHTML = buildReasonRows(data.reasonBars);
+  // Reason / Why Subscribe section
+  const reasonSection = document.getElementById('reasonSection');
+  if (data.reasonBars && data.reasonBars.length > 0) {
+    const sLabel = data.reasonSectionLabel || '為什麼訂閱';
+    const sHeading = data.reasonSectionHeading || '他們為什麼選擇區塊勢？';
+    const sIntro = data.reasonIntro || '';
+    reasonSection.innerHTML = `
+      <section class="reveal">
+        <div class="section-label">${sLabel}</div>
+        <div class="section-heading">${sHeading}</div>
+        <div class="section-body">${sIntro}</div>
+        <div class="reason-bars">${buildReasonRows(data.reasonBars)}</div>
+      </section>
+      <div class="divider"></div>`;
+  } else {
+    reasonSection.innerHTML = '';
+  }
 
   // Filter tabs
   const filterTabs = document.getElementById('filterTabs');
@@ -1118,8 +1443,22 @@ function renderReport(year) {
     </div>
   `).join('');
 
-  // Situations
-  document.getElementById('situationBars').innerHTML = buildReasonRows(data.situations);
+  // Situations (only some years have this)
+  const situationSection = document.getElementById('situationSection');
+  if (data.situations && data.situations.length > 0) {
+    situationSection.innerHTML = `
+      <section class="reveal">
+        <div class="section-label">使用情境</div>
+        <div class="section-heading">什麼時候會想到區塊勢？</div>
+        <div class="section-body">
+          讀者告訴我們，區塊勢已經融入了他們的日常資訊生活。
+        </div>
+        <div class="reason-bars">${buildReasonRows(data.situations)}</div>
+      </section>
+      <div class="divider"></div>`;
+  } else {
+    situationSection.innerHTML = '';
+  }
 
   // Footer
   document.getElementById('footerSource').textContent = data.footerSource;

@@ -49,6 +49,147 @@ body::before {
 .reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.8s ease, transform 0.8s ease; }
 .reveal.visible { opacity: 1; transform: translateY(0); }
 
+/* ===== SIDEBAR ===== */
+.sidebar-toggle {
+  position: fixed;
+  top: 1.5rem;
+  left: 1.5rem;
+  z-index: 1000;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.6rem 1rem;
+  font-family: var(--sans);
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.sidebar-toggle:hover {
+  color: var(--accent);
+  border-color: var(--accent-dim);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+}
+.sidebar-toggle-icon {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  width: 14px;
+}
+.sidebar-toggle-icon span {
+  display: block;
+  height: 1.5px;
+  background: currentColor;
+  border-radius: 1px;
+  transition: all 0.3s;
+}
+.sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.3);
+  z-index: 1001;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+  backdrop-filter: blur(2px);
+}
+.sidebar-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 280px;
+  height: 100vh;
+  background: var(--bg-card);
+  border-right: 1px solid var(--border);
+  z-index: 1002;
+  transform: translateX(-100%);
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  display: flex;
+  flex-direction: column;
+  box-shadow: 4px 0 24px rgba(0,0,0,0.08);
+}
+.sidebar.open {
+  transform: translateX(0);
+}
+.sidebar-header {
+  padding: 2rem 1.5rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+}
+.sidebar-header-title {
+  font-family: var(--serif);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+.sidebar-header-sub {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 0.3rem;
+}
+.sidebar-years {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem 0;
+}
+.sidebar-year-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.9rem 1.5rem;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-decoration: none;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  border-left: 3px solid transparent;
+}
+.sidebar-year-item:hover {
+  background: var(--accent-glow);
+  color: var(--text-primary);
+}
+.sidebar-year-item.active {
+  color: var(--accent);
+  font-weight: 500;
+  border-left-color: var(--accent);
+  background: var(--accent-glow);
+}
+.sidebar-year-num {
+  font-family: var(--serif);
+  font-size: 1.4rem;
+  font-weight: 900;
+  line-height: 1;
+}
+.sidebar-year-label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+.sidebar-year-item.active .sidebar-year-label {
+  color: var(--accent-dim);
+}
+.sidebar-close {
+  position: absolute;
+  top: 1.5rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0.3rem;
+  line-height: 1;
+  transition: color 0.2s;
+}
+.sidebar-close:hover { color: var(--text-primary); }
+
 /* ===== HERO ===== */
 .hero {
   min-height: 100vh;
@@ -198,7 +339,6 @@ section {
   height: 0;
   position: relative;
 }
-.nps-bar.animated { /* height set by JS */ }
 .nps-bar.detractor { background: linear-gradient(to top, #e0c4c4, #c9a0a0); }
 .nps-bar.passive { background: linear-gradient(to top, #c8d4de, #a8bcc8); }
 .nps-bar.promoter { background: linear-gradient(to top, var(--accent-dim), var(--accent)); }
@@ -537,57 +677,43 @@ footer {
   .stat-card-num { font-size: 2rem; }
   .filter-tabs { gap: 0.4rem; }
   .nps-legend { flex-wrap: wrap; gap: 1rem; }
+  .sidebar { width: 260px; }
+  .sidebar-toggle { left: 1rem; top: 1rem; padding: 0.5rem 0.8rem; font-size: 0.75rem; }
 }
 </style>
 </head>
 <body>
+
+<!-- SIDEBAR -->
+<button class="sidebar-toggle" id="sidebarToggle">
+  <div class="sidebar-toggle-icon"><span></span><span></span><span></span></div>
+  歷年報告
+</button>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<nav class="sidebar" id="sidebar">
+  <button class="sidebar-close" id="sidebarClose">&times;</button>
+  <div class="sidebar-header">
+    <div class="sidebar-header-title">歷年讀者調查</div>
+    <div class="sidebar-header-sub">選擇年份查看完整報告</div>
+  </div>
+  <div class="sidebar-years" id="sidebarYears"></div>
+</nav>
 
 <!-- HERO -->
 <header class="hero">
   <div class="hero-logo" style="opacity:0; animation: fadeUp 1s 0.1s forwards;">
     <img src="https://i.urusai.cc/yaku8.png" alt="區塊勢" style="height: 80px; width: auto;">
   </div>
-  <div class="hero-label">2026 年度讀者調查</div>
+  <div class="hero-label" id="heroLabel"></div>
   <h1 class="hero-title">付費讀者<br>想告訴你<em>一件事</em></h1>
   <p class="hero-subtitle">以下所有內容，都來自正在閱讀區塊勢的人親手寫下的回饋。</p>
-  <div class="hero-stats">
-    <div>
-      <div class="hero-stat-num" data-count="8.9" data-decimal="true">0</div>
-      <div class="hero-stat-label">平均推薦分數（滿分 10）</div>
-    </div>
-    <div>
-      <div class="hero-stat-num" data-count="94" data-suffix="%">0</div>
-      <div class="hero-stat-label">每篇或多數文章都看</div>
-    </div>
-    <div>
-      <div class="hero-stat-num" data-count="57" data-suffix="%">0</div>
-      <div class="hero-stat-label">停更會「非常失望」</div>
-    </div>
-  </div>
+  <div class="hero-stats" id="heroStats"></div>
   <div class="scroll-hint"><span></span></div>
 </header>
 
 <!-- MARQUEE -->
 <div class="marquee-section">
-  <div class="marquee-track">
-    <div class="marquee-item">「<em>幣圈唯一清流</em>」</div>
-    <div class="marquee-item">「<em>有溫度的表達方式</em>」</div>
-    <div class="marquee-item">「<em>深入淺出，不輕易流於媚俗</em>」</div>
-    <div class="marquee-item">「<em>認真說人話的區塊鏈媒體</em>」</div>
-    <div class="marquee-item">「<em>讓人很舒服的幣圈歸屬感</em>」</div>
-    <div class="marquee-item">「<em>有靈魂的電子報</em>」</div>
-    <div class="marquee-item">「<em>雜訊滿天飛時可信賴的資訊來源</em>」</div>
-    <div class="marquee-item">「<em>一般人模仿不來的</em>」</div>
-    <!-- duplicate for seamless loop -->
-    <div class="marquee-item">「<em>幣圈唯一清流</em>」</div>
-    <div class="marquee-item">「<em>有溫度的表達方式</em>」</div>
-    <div class="marquee-item">「<em>深入淺出，不輕易流於媚俗</em>」</div>
-    <div class="marquee-item">「<em>認真說人話的區塊鏈媒體</em>」</div>
-    <div class="marquee-item">「<em>讓人很舒服的幣圈歸屬感</em>」</div>
-    <div class="marquee-item">「<em>有靈魂的電子報</em>」</div>
-    <div class="marquee-item">「<em>雜訊滿天飛時可信賴的資訊來源</em>」</div>
-    <div class="marquee-item">「<em>一般人模仿不來的</em>」</div>
-  </div>
+  <div class="marquee-track" id="marqueeTrack"></div>
 </div>
 
 <!-- NPS SECTION -->
@@ -597,20 +723,16 @@ footer {
   <div class="section-body" style="margin: 0 auto 2rem;">
     我們直接問了。0 到 10 分，讀者的答案長這樣。
   </div>
-  <div class="nps-bar-container" id="npsChart">
-    <!-- JS renders -->
-  </div>
+  <div class="nps-bar-container" id="npsChart"></div>
   <div class="nps-legend">
     <span class="leg-d">批評者（0–6）</span>
     <span class="leg-n">被動者（7–8）</span>
     <span class="leg-p">推薦者（9–10）</span>
   </div>
   <div style="margin-top: 3rem;">
-    <div class="nps-big">+61</div>
+    <div class="nps-big" id="npsBig"></div>
     <div class="nps-big-label">Net Promoter Score</div>
-    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.8rem; max-width: 400px; margin-left: auto; margin-right: auto;">
-      NPS 超過 50 即為「卓越」等級，多數 SaaS 產品落在 30–40 之間。
-    </p>
+    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.8rem; max-width: 400px; margin-left: auto; margin-right: auto;" id="npsNote"></p>
   </div>
 </section>
 
@@ -623,32 +745,7 @@ footer {
   <div class="section-body">
     這些數字來自付費讀者的匿名問卷。沒有篩選，沒有修飾。
   </div>
-  <div class="stat-grid">
-    <div class="stat-card reveal">
-      <div class="stat-card-num">54%</div>
-      <div class="stat-card-label">每篇文章都看</div>
-    </div>
-    <div class="stat-card reveal">
-      <div class="stat-card-num">94%</div>
-      <div class="stat-card-label">多數或每篇都看</div>
-    </div>
-    <div class="stat-card reveal">
-      <div class="stat-card-num">76%</div>
-      <div class="stat-card-label">認為深度「剛好」</div>
-    </div>
-    <div class="stat-card reveal">
-      <div class="stat-card-num">90%</div>
-      <div class="stat-card-label">認為篇幅「剛好」</div>
-    </div>
-    <div class="stat-card reveal">
-      <div class="stat-card-num">57%</div>
-      <div class="stat-card-label">停更會非常失望</div>
-    </div>
-    <div class="stat-card reveal">
-      <div class="stat-card-num">99%</div>
-      <div class="stat-card-label">停更會失望或非常失望</div>
-    </div>
-  </div>
+  <div class="stat-grid" id="statGrid"></div>
 </section>
 
 <div class="divider"></div>
@@ -657,39 +754,8 @@ footer {
 <section class="reveal">
   <div class="section-label">付費原因</div>
   <div class="section-heading">他們為什麼願意付錢？</div>
-  <div class="section-body">
-    最多人選的理由，其實跟投資報牌或獨家消息無關——他們想支持這樣的媒體繼續存在。
-  </div>
-  <div class="reason-bars">
-    <div class="reason-row reveal">
-      <div class="reason-label-row">
-        <span class="reason-label">想支持這樣的媒體存在</span>
-        <span class="reason-pct">39%</span>
-      </div>
-      <div class="reason-track"><div class="reason-fill" data-width="100%"></div></div>
-    </div>
-    <div class="reason-row reveal">
-      <div class="reason-label-row">
-        <span class="reason-label">認同作者的觀點與風格</span>
-        <span class="reason-pct">29%</span>
-      </div>
-      <div class="reason-track"><div class="reason-fill" data-width="73%"></div></div>
-    </div>
-    <div class="reason-row reveal">
-      <div class="reason-label-row">
-        <span class="reason-label">需要可靠的資訊來源</span>
-        <span class="reason-pct">24%</span>
-      </div>
-      <div class="reason-track"><div class="reason-fill" data-width="61%"></div></div>
-    </div>
-    <div class="reason-row reveal">
-      <div class="reason-label-row">
-        <span class="reason-label">某幾篇文章寫得很好</span>
-        <span class="reason-pct">4%</span>
-      </div>
-      <div class="reason-track"><div class="reason-fill" data-width="9%"></div></div>
-    </div>
-  </div>
+  <div class="section-body" id="reasonIntro"></div>
+  <div class="reason-bars" id="reasonBars"></div>
 </section>
 
 <div class="divider"></div>
@@ -701,17 +767,8 @@ footer {
   <div class="section-body">
     以下是讀者在問卷中寫下的回答，一字未改。你可以用分類篩選，找到和你最相似的讀者怎麼說。
   </div>
-  <div class="filter-tabs" id="filterTabs">
-    <button class="filter-tab active" data-filter="all">全部</button>
-    <button class="filter-tab" data-filter="trust">值得信賴</button>
-    <button class="filter-tab" data-filter="easy">深入淺出</button>
-    <button class="filter-tab" data-filter="unique">無可取代</button>
-    <button class="filter-tab" data-filter="warm">有溫度</button>
-    <button class="filter-tab" data-filter="support">想支持</button>
-  </div>
-  <div class="testimonials-grid" id="testimonialsGrid">
-    <!-- JS renders -->
-  </div>
+  <div class="filter-tabs" id="filterTabs"></div>
+  <div class="testimonials-grid" id="testimonialsGrid"></div>
 </section>
 
 <div class="divider"></div>
@@ -723,30 +780,7 @@ footer {
   <div class="section-body">
     他們不全是業內人士，而是對這個世界充滿好奇的人。
   </div>
-  <div class="profile-grid">
-    <div class="profile-card reveal">
-      <h3>年齡分佈</h3>
-      <div class="profile-item"><span class="profile-item-label">21 – 30 歲</span><span class="profile-item-value">8%</span></div>
-      <div class="profile-item"><span class="profile-item-label">31 – 40 歲</span><span class="profile-item-value">40%</span></div>
-      <div class="profile-item"><span class="profile-item-label">41 – 50 歲</span><span class="profile-item-value">29%</span></div>
-      <div class="profile-item"><span class="profile-item-label">51 – 60 歲</span><span class="profile-item-value">18%</span></div>
-      <div class="profile-item"><span class="profile-item-label">61 歲以上</span><span class="profile-item-value">5%</span></div>
-    </div>
-    <div class="profile-card reveal">
-      <h3>與區塊鏈的關係</h3>
-      <div class="profile-item"><span class="profile-item-label">純粹有興趣</span><span class="profile-item-value">48%</span></div>
-      <div class="profile-item"><span class="profile-item-label">部分相關</span><span class="profile-item-value">19%</span></div>
-      <div class="profile-item"><span class="profile-item-label">這是我的主要工作</span><span class="profile-item-value">13%</span></div>
-      <div class="profile-item"><span class="profile-item-label">有興趣轉職</span><span class="profile-item-value">11%</span></div>
-    </div>
-    <div class="profile-card reveal">
-      <h3>訂閱年資</h3>
-      <div class="profile-item"><span class="profile-item-label">不到 1 年</span><span class="profile-item-value">6%</span></div>
-      <div class="profile-item"><span class="profile-item-label">1 – 3 年</span><span class="profile-item-value">45%</span></div>
-      <div class="profile-item"><span class="profile-item-label">4 – 6 年</span><span class="profile-item-value">29%</span></div>
-      <div class="profile-item"><span class="profile-item-label">7 年以上</span><span class="profile-item-value">20%</span></div>
-    </div>
-  </div>
+  <div class="profile-grid" id="profileGrid"></div>
 </section>
 
 <div class="divider"></div>
@@ -758,36 +792,7 @@ footer {
   <div class="section-body">
     讀者告訴我們，區塊勢已經融入了他們的日常資訊生活。
   </div>
-  <div class="reason-bars">
-    <div class="reason-row reveal">
-      <div class="reason-label-row">
-        <span class="reason-label">例行性閱讀，保持產業了解</span>
-        <span class="reason-pct">89%</span>
-      </div>
-      <div class="reason-track"><div class="reason-fill" data-width="100%"></div></div>
-    </div>
-    <div class="reason-row reveal">
-      <div class="reason-label-row">
-        <span class="reason-label">想了解新聞事件的來龍去脈</span>
-        <span class="reason-pct">63%</span>
-      </div>
-      <div class="reason-track"><div class="reason-fill" data-width="71%"></div></div>
-    </div>
-    <div class="reason-row reveal">
-      <div class="reason-label-row">
-        <span class="reason-label">尋找產業發展趨勢的線索</span>
-        <span class="reason-pct">54%</span>
-      </div>
-      <div class="reason-track"><div class="reason-fill" data-width="60%"></div></div>
-    </div>
-    <div class="reason-row reveal">
-      <div class="reason-label-row">
-        <span class="reason-label">需要理解某個技術概念</span>
-        <span class="reason-pct">49%</span>
-      </div>
-      <div class="reason-track"><div class="reason-fill" data-width="55%"></div></div>
-    </div>
-  </div>
+  <div class="reason-bars" id="situationBars"></div>
 </section>
 
 <!-- CTA -->
@@ -804,94 +809,218 @@ footer {
 
 <footer>
   <img src="https://i.urusai.cc/yaku8.png" alt="區塊勢" style="height: 36px; width: auto; margin-bottom: 1rem; opacity: 0.5;">
-  <p>資料來源：區塊勢 2025 年度內容滿意度調查</p>
-  <p style="margin-top: 0.5rem;">© 2026 區塊勢</p>
+  <p id="footerSource"></p>
+  <p style="margin-top: 0.5rem;">&copy; 2026 區塊勢</p>
 </footer>
 
 <script>
-// ===== TESTIMONIALS DATA =====
-const testimonials = [
-  { text: "我認為最難被取代的主因有兩個：《區塊勢》經常從親身經驗切入，告訴使用者「應用為什麼重要」。第二，《區塊勢》能潛移默化地讓讀者從投資人視角，轉變為使用者視角，最終成為真正的 Web3 公民。", score: 10, tag: "unique", sub: "1 年", featured: true },
-  { text: "把原本很硬的監管、法規、金融邏輯，用很生活化的方式講到你一聽就懂，還能順便告訴你「這件事到底會影響誰、你該注意什麼」，而且重點是長期維持資訊來源可靠、判斷不亂飄，讓人願意在雜訊滿天飛的時候當成可信賴的資訊來源。", score: 9, tag: "trust", sub: "1 年", featured: true },
-  { text: "就是跟人的連結、技術／事件放在社會的脈絡吧。瞄過有些電子報，好像寫得很不錯，分析企業、科技、事件等，但我沒興趣，覺得沒靈魂，不知為甚麼要去知道那些事。", score: 10, tag: "warm", sub: "8 年", featured: true },
-  { text: "作者的觀點與風格，對於 Web3 的厚望與堅持，且主題都是有趣的，不會像國內那些幣圈媒體大多環繞在 Fintech 相關的議題（銅臭味太重）。", score: 10, tag: "unique", sub: "4 年" },
-  { text: "專注在這個新科技的發展！我覺得這是在這個科技發展初期，許多人只談錢只談獲利，完全不在乎科技帶來的影響力的時代，很難能可貴的事情。", score: 9, tag: "support", sub: "1 年" },
-  { text: "文章很多，新聞也很多，但被人揉合過的文字卻很少，我喜歡區塊勢有溫度的表達方式！", score: 10, tag: "warm", sub: "4 年" },
-  { text: "區塊勢的文章是經過整理，廢話少的優質內容，讓我這種「非技術開發人員」可以系統化、高效地吸收新知。而不需要從各種雜亂的新聞、論壇、與社交軟體上拼湊資訊。", score: 10, tag: "easy", sub: "1 年" },
-  { text: "也許是明恩這個人吧，你總給我一種和其他幣圈 KOL 很不一樣的感覺。同樣身為 NTUEE 的逃兵，雖然走向不同的道路。", score: 10, tag: "warm", sub: "3 年" },
-  { text: "定期出刊與產業趨勢有關的內容，而且是非投資類型的文章，市面上大多的文章都帶有投資屬性，看了很煩。", score: 10, tag: "unique", sub: "1 年" },
-  { text: "將消化過後的技術或問題，用日常生活經驗來比喻，幫助理解一些圈內發生的事。", score: 10, tag: "easy", sub: "3 年" },
-  { text: "選題與內容的品質突出，不輕易流於媚俗或平庸化。", score: 10, tag: "unique", sub: "3 年" },
-  { text: "勇於各種嘗試的體驗經驗，譬如之前 DeFi 出事，分享身邊好友、社群集思廣益出的自動救援機器人。讓人感覺到互相支援運行的節點。幣圈清流🤣 是某種讓人很舒服的幣圈歸屬感。", score: 10, tag: "warm", sub: "2 年" },
-  { text: "內容接地氣紮實，作者從本地角度出發思考每期內容。", score: 10, tag: "trust", sub: "8 年" },
-  { text: "可以簡單的例子深入淺出的分析事件或是說明技術；不受市場情緒影響，說出對於事件的真實看法。", score: 9, tag: "trust", sub: "2 年" },
-  { text: "每篇文章都讓我有獨家見解感覺，不是其他網站的外電翻譯文章轉發。", score: 10, tag: "unique", sub: "4 年" },
-  { text: "市場上少有對區塊鏈具有廣度及深度評論分析，且能穩定出刊又容易閱讀的媒體。", score: 10, tag: "trust", sub: "8 年" },
-  { text: "對區塊鏈公共價值的堅持，對人文／民主／社會的關懷，還有對弱勢的體貼。", score: 10, tag: "support", sub: "未知" },
-  { text: "或許很難說是否會被取代，但明恩的寫作風格與內容導向，應該是一般人模仿不來的。", score: 10, tag: "unique", sub: "7 年" },
-  { text: "願意自己實際操作再與聽眾分享，無論過程對或錯或者踩雷，讓我們能避免或者踩雷時也能清楚為什麼？這種經驗的分享很難得過程辛苦，謝謝！", score: 10, tag: "trust", sub: "6 年" },
-  { text: "內容多元，介紹很多新的應用方式、創新模式、穩定幣錢包以及駭客事件等等。就是感受到銘恩很熱血，不斷給我們最好最新的資訊。", score: 10, tag: "warm", sub: "8 年" },
-  { text: "用普通人也能懂的比喻講區塊鏈產業的許多大事件，在我嘗試對別人科普區塊鏈產業時有很大啟發。", score: 10, tag: "easy", sub: "1 年" },
-  { text: "講真話！不只是肉身在寫文章，連內容也是真心話、真實的經歷。", score: 8, tag: "trust", sub: "未知" },
-  { text: "幣圈唯一清流，守備範圍極廣從技術到應用，面面俱到，文字淺顯易懂。", score: 10, tag: "easy", sub: "8 年" },
-  { text: "內容實在、想法前瞻、充滿正能量且有希望、白話好懂、形容或比喻的方法都很平易近人且接地氣。", score: 10, tag: "easy", sub: "未知" },
-  { text: "好懂且感受到「自己『彷彿』跟世界沒有脫節」。", score: 8, tag: "easy", sub: "8 年" },
-  { text: "核心價值不同，對同一件事看到的風景也會很不同。區塊勢是以人文視角出發，帶人去了解區塊鏈的媒體，既保留技術深度，也總是會回扣對於個人的影響。", score: 10, tag: "unique", sub: "未知" },
-  { text: "彙整產業前瞻資訊精確。如果想超越，基本上就必須是在現場自己整理資料並吸收消化的業內人士了吧。", score: 10, tag: "trust", sub: "1 年" },
-  { text: "雖然並沒有準時的把文章給讀完，但讀的每篇文章都能感受到明恩的用心，一直讓區塊勢維持在一個水準上。", score: 10, tag: "support", sub: "2 年" },
-  { text: "文章淺顯易讀能讓非專業人士也能享受閱讀。", score: 9, tag: "easy", sub: "5 年" },
-  { text: "極少數能對區塊鏈能公正、客觀及廣泛評論分析的媒體。", score: 10, tag: "trust", sub: "未知" },
-  { text: "有固定錄音可以在上下班開車時利用時間關注區塊鏈與幣圈最新趨勢。可讓我利用零碎時間吸收新知。", score: 10, tag: "easy", sub: "6 年" },
-  { text: "中性的分析技術與實務間的可能性，很實在，不用擔心背後有其他意圖。", score: 8, tag: "trust", sub: "未知" },
-  { text: "來自自主創作的台灣觀點與繁體中文內容。常見到的其他中文內容只是搬運其他媒體的文字重新剪輯排版，甚至連翻譯都不順，並沒有立論清晰的自我觀點。", score: 10, tag: "unique", sub: "未知" },
-  { text: "This is the most detailed and in-depth article in Traditional Chinese.", score: 8, tag: "trust", sub: "未知" },
-  { text: "所有內容都很平易近人，而且偏應用面居多，比較容易讓朋友知道這個產業到底在做什麼。", score: 9, tag: "easy", sub: "未知" },
-  { text: "內容紮實，相當有觀點，且立論清晰易懂。", score: 8, tag: "trust", sub: "未知" },
-  { text: "區塊勢對公共利益的堅持，讓我可以跟朋友放心推薦。", score: 10, tag: "support", sub: "未知" },
-];
+// ===================================================================
+// REPORTS DATA — add new years by copying the 2025 structure below
+// ===================================================================
+const REPORTS = {
+  2025: {
+    label: "2025 年度讀者調查",
+    footerSource: "資料來源：區塊勢 2025 年度內容滿意度調查",
+    heroStats: [
+      { value: 8.9, decimal: true, label: "平均推薦分數（滿分 10）" },
+      { value: 94, suffix: "%", label: "每篇或多數文章都看" },
+      { value: 57, suffix: "%", label: "停更會「非常失望」" },
+    ],
+    marqueeQuotes: [
+      "幣圈唯一清流", "有溫度的表達方式", "深入淺出，不輕易流於媚俗",
+      "認真說人話的區塊鏈媒體", "讓人很舒服的幣圈歸屬感", "有靈魂的電子報",
+      "雜訊滿天飛時可信賴的資訊來源", "一般人模仿不來的",
+    ],
+    npsData: [
+      { score: 0, count: 0 }, { score: 1, count: 1 }, { score: 2, count: 1 },
+      { score: 3, count: 0 }, { score: 4, count: 0 }, { score: 5, count: 0 },
+      { score: 6, count: 1 }, { score: 7, count: 7 }, { score: 8, count: 20 },
+      { score: 9, count: 11 }, { score: 10, count: 43 },
+    ],
+    npsScore: "+61",
+    npsNote: "NPS 超過 50 即為「卓越」等級，多數 SaaS 產品落在 30–40 之間。",
+    statCards: [
+      { num: "54%", label: "每篇文章都看" },
+      { num: "94%", label: "多數或每篇都看" },
+      { num: "76%", label: "認為深度「剛好」" },
+      { num: "90%", label: "認為篇幅「剛好」" },
+      { num: "57%", label: "停更會非常失望" },
+      { num: "99%", label: "停更會失望或非常失望" },
+    ],
+    reasonIntro: "最多人選的理由，其實跟投資報牌或獨家消息無關——他們想支持這樣的媒體繼續存在。",
+    reasonBars: [
+      { label: "想支持這樣的媒體存在", pct: "39%", width: "100%" },
+      { label: "認同作者的觀點與風格", pct: "29%", width: "73%" },
+      { label: "需要可靠的資訊來源", pct: "24%", width: "61%" },
+      { label: "某幾篇文章寫得很好", pct: "4%", width: "9%" },
+    ],
+    filterTabs: [
+      { key: "all", label: "全部" },
+      { key: "trust", label: "值得信賴" },
+      { key: "easy", label: "深入淺出" },
+      { key: "unique", label: "無可取代" },
+      { key: "warm", label: "有溫度" },
+      { key: "support", label: "想支持" },
+    ],
+    testimonials: [
+      { text: "我認為最難被取代的主因有兩個：《區塊勢》經常從親身經驗切入，告訴使用者「應用為什麼重要」。第二，《區塊勢》能潛移默化地讓讀者從投資人視角，轉變為使用者視角，最終成為真正的 Web3 公民。", score: 10, tag: "unique", sub: "1 年", featured: true },
+      { text: "把原本很硬的監管、法規、金融邏輯，用很生活化的方式講到你一聽就懂，還能順便告訴你「這件事到底會影響誰、你該注意什麼」，而且重點是長期維持資訊來源可靠、判斷不亂飄，讓人願意在雜訊滿天飛的時候當成可信賴的資訊來源。", score: 9, tag: "trust", sub: "1 年", featured: true },
+      { text: "就是跟人的連結、技術／事件放在社會的脈絡吧。瞄過有些電子報，好像寫得很不錯，分析企業、科技、事件等，但我沒興趣，覺得沒靈魂，不知為甚麼要去知道那些事。", score: 10, tag: "warm", sub: "8 年", featured: true },
+      { text: "作者的觀點與風格，對於 Web3 的厚望與堅持，且主題都是有趣的，不會像國內那些幣圈媒體大多環繞在 Fintech 相關的議題（銅臭味太重）。", score: 10, tag: "unique", sub: "4 年" },
+      { text: "專注在這個新科技的發展！我覺得這是在這個科技發展初期，許多人只談錢只談獲利，完全不在乎科技帶來的影響力的時代，很難能可貴的事情。", score: 9, tag: "support", sub: "1 年" },
+      { text: "文章很多，新聞也很多，但被人揉合過的文字卻很少，我喜歡區塊勢有溫度的表達方式！", score: 10, tag: "warm", sub: "4 年" },
+      { text: "區塊勢的文章是經過整理，廢話少的優質內容，讓我這種「非技術開發人員」可以系統化、高效地吸收新知。而不需要從各種雜亂的新聞、論壇、與社交軟體上拼湊資訊。", score: 10, tag: "easy", sub: "1 年" },
+      { text: "也許是明恩這個人吧，你總給我一種和其他幣圈 KOL 很不一樣的感覺。同樣身為 NTUEE 的逃兵，雖然走向不同的道路。", score: 10, tag: "warm", sub: "3 年" },
+      { text: "定期出刊與產業趨勢有關的內容，而且是非投資類型的文章，市面上大多的文章都帶有投資屬性，看了很煩。", score: 10, tag: "unique", sub: "1 年" },
+      { text: "將消化過後的技術或問題，用日常生活經驗來比喻，幫助理解一些圈內發生的事。", score: 10, tag: "easy", sub: "3 年" },
+      { text: "選題與內容的品質突出，不輕易流於媚俗或平庸化。", score: 10, tag: "unique", sub: "3 年" },
+      { text: "勇於各種嘗試的體驗經驗，譬如之前 DeFi 出事，分享身邊好友、社群集思廣益出的自動救援機器人。讓人感覺到互相支援運行的節點。幣圈清流\uD83E\uDD23 是某種讓人很舒服的幣圈歸屬感。", score: 10, tag: "warm", sub: "2 年" },
+      { text: "內容接地氣紮實，作者從本地角度出發思考每期內容。", score: 10, tag: "trust", sub: "8 年" },
+      { text: "可以簡單的例子深入淺出的分析事件或是說明技術；不受市場情緒影響，說出對於事件的真實看法。", score: 9, tag: "trust", sub: "2 年" },
+      { text: "每篇文章都讓我有獨家見解感覺，不是其他網站的外電翻譯文章轉發。", score: 10, tag: "unique", sub: "4 年" },
+      { text: "市場上少有對區塊鏈具有廣度及深度評論分析，且能穩定出刊又容易閱讀的媒體。", score: 10, tag: "trust", sub: "8 年" },
+      { text: "對區塊鏈公共價值的堅持，對人文／民主／社會的關懷，還有對弱勢的體貼。", score: 10, tag: "support", sub: "未知" },
+      { text: "或許很難說是否會被取代，但明恩的寫作風格與內容導向，應該是一般人模仿不來的。", score: 10, tag: "unique", sub: "7 年" },
+      { text: "願意自己實際操作再與聽眾分享，無論過程對或錯或者踩雷，讓我們能避免或者踩雷時也能清楚為什麼？這種經驗的分享很難得過程辛苦，謝謝！", score: 10, tag: "trust", sub: "6 年" },
+      { text: "內容多元，介紹很多新的應用方式、創新模式、穩定幣錢包以及駭客事件等等。就是感受到銘恩很熱血，不斷給我們最好最新的資訊。", score: 10, tag: "warm", sub: "8 年" },
+      { text: "用普通人也能懂的比喻講區塊鏈產業的許多大事件，在我嘗試對別人科普區塊鏈產業時有很大啟發。", score: 10, tag: "easy", sub: "1 年" },
+      { text: "講真話！不只是肉身在寫文章，連內容也是真心話、真實的經歷。", score: 8, tag: "trust", sub: "未知" },
+      { text: "幣圈唯一清流，守備範圍極廣從技術到應用，面面俱到，文字淺顯易懂。", score: 10, tag: "easy", sub: "8 年" },
+      { text: "內容實在、想法前瞻、充滿正能量且有希望、白話好懂、形容或比喻的方法都很平易近人且接地氣。", score: 10, tag: "easy", sub: "未知" },
+      { text: "好懂且感受到「自己『彷彿』跟世界沒有脫節」。", score: 8, tag: "easy", sub: "8 年" },
+      { text: "核心價值不同，對同一件事看到的風景也會很不同。區塊勢是以人文視角出發，帶人去了解區塊鏈的媒體，既保留技術深度，也總是會回扣對於個人的影響。", score: 10, tag: "unique", sub: "未知" },
+      { text: "彙整產業前瞻資訊精確。如果想超越，基本上就必須是在現場自己整理資料並吸收消化的業內人士了吧。", score: 10, tag: "trust", sub: "1 年" },
+      { text: "雖然並沒有準時的把文章給讀完，但讀的每篇文章都能感受到明恩的用心，一直讓區塊勢維持在一個水準上。", score: 10, tag: "support", sub: "2 年" },
+      { text: "文章淺顯易讀能讓非專業人士也能享受閱讀。", score: 9, tag: "easy", sub: "5 年" },
+      { text: "極少數能對區塊鏈能公正、客觀及廣泛評論分析的媒體。", score: 10, tag: "trust", sub: "未知" },
+      { text: "有固定錄音可以在上下班開車時利用時間關注區塊鏈與幣圈最新趨勢。可讓我利用零碎時間吸收新知。", score: 10, tag: "easy", sub: "6 年" },
+      { text: "中性的分析技術與實務間的可能性，很實在，不用擔心背後有其他意圖。", score: 8, tag: "trust", sub: "未知" },
+      { text: "來自自主創作的台灣觀點與繁體中文內容。常見到的其他中文內容只是搬運其他媒體的文字重新剪輯排版，甚至連翻譯都不順，並沒有立論清晰的自我觀點。", score: 10, tag: "unique", sub: "未知" },
+      { text: "This is the most detailed and in-depth article in Traditional Chinese.", score: 8, tag: "trust", sub: "未知" },
+      { text: "所有內容都很平易近人，而且偏應用面居多，比較容易讓朋友知道這個產業到底在做什麼。", score: 9, tag: "easy", sub: "未知" },
+      { text: "內容紮實，相當有觀點，且立論清晰易懂。", score: 8, tag: "trust", sub: "未知" },
+      { text: "區塊勢對公共利益的堅持，讓我可以跟朋友放心推薦。", score: 10, tag: "support", sub: "未知" },
+    ],
+    profileCards: [
+      {
+        title: "年齡分佈",
+        items: [
+          { label: "21 – 30 歲", value: "8%" },
+          { label: "31 – 40 歲", value: "40%" },
+          { label: "41 – 50 歲", value: "29%" },
+          { label: "51 – 60 歲", value: "18%" },
+          { label: "61 歲以上", value: "5%" },
+        ],
+      },
+      {
+        title: "與區塊鏈的關係",
+        items: [
+          { label: "純粹有興趣", value: "48%" },
+          { label: "部分相關", value: "19%" },
+          { label: "這是我的主要工作", value: "13%" },
+          { label: "有興趣轉職", value: "11%" },
+        ],
+      },
+      {
+        title: "訂閱年資",
+        items: [
+          { label: "不到 1 年", value: "6%" },
+          { label: "1 – 3 年", value: "45%" },
+          { label: "4 – 6 年", value: "29%" },
+          { label: "7 年以上", value: "20%" },
+        ],
+      },
+    ],
+    situations: [
+      { label: "例行性閱讀，保持產業了解", pct: "89%", width: "100%" },
+      { label: "想了解新聞事件的來龍去脈", pct: "63%", width: "71%" },
+      { label: "尋找產業發展趨勢的線索", pct: "54%", width: "60%" },
+      { label: "需要理解某個技術概念", pct: "49%", width: "55%" },
+    ],
+  },
+  // ---------------------------------------------------------------
+  // TODO: Add more years here. Copy the 2025 structure and fill data.
+  // Example:
+  // 2024: { label: "2024 年度讀者調查", ... },
+  // 2023: { label: "2023 年度讀者調查", ... },
+  // ---------------------------------------------------------------
+};
 
-// ===== NPS CHART =====
-const npsData = [
-  { score: 0, count: 0 }, { score: 1, count: 1 }, { score: 2, count: 1 },
-  { score: 3, count: 0 }, { score: 4, count: 0 }, { score: 5, count: 0 },
-  { score: 6, count: 1 }, { score: 7, count: 7 }, { score: 8, count: 20 },
-  { score: 9, count: 11 }, { score: 10, count: 43 }
-];
-const maxCount = Math.max(...npsData.map(d => d.count));
-const npsChart = document.getElementById('npsChart');
+// ===================================================================
+// APP STATE & HELPERS
+// ===================================================================
+const YEARS = Object.keys(REPORTS).map(Number).sort((a, b) => b - a);
+const LATEST_YEAR = YEARS[0];
+let currentYear = null;
+let currentTestimonialFilter = 'all';
 
-npsData.forEach(d => {
-  const group = document.createElement('div');
-  group.className = 'nps-bar-group';
+function getYearFromHash() {
+  const match = location.hash.match(/#\/(\d{4})/);
+  if (match && REPORTS[match[1]]) return Number(match[1]);
+  return LATEST_YEAR;
+}
 
-  const countEl = document.createElement('div');
-  countEl.className = 'nps-bar-count';
-  countEl.textContent = d.count || '';
+// ===================================================================
+// SIDEBAR
+// ===================================================================
+const sidebar = document.getElementById('sidebar');
+const sidebarOverlay = document.getElementById('sidebarOverlay');
+const sidebarToggle = document.getElementById('sidebarToggle');
+const sidebarClose = document.getElementById('sidebarClose');
+const sidebarYears = document.getElementById('sidebarYears');
 
-  const bar = document.createElement('div');
-  let cls = d.score <= 6 ? 'detractor' : d.score <= 8 ? 'passive' : 'promoter';
-  bar.className = `nps-bar ${cls}`;
-  bar.dataset.height = d.count > 0 ? (d.count / maxCount * 160) + 'px' : '4px';
+function openSidebar() {
+  sidebar.classList.add('open');
+  sidebarOverlay.classList.add('open');
+}
+function closeSidebar() {
+  sidebar.classList.remove('open');
+  sidebarOverlay.classList.remove('open');
+}
 
-  const label = document.createElement('div');
-  label.className = 'nps-bar-score';
-  label.textContent = d.score;
+sidebarToggle.addEventListener('click', openSidebar);
+sidebarOverlay.addEventListener('click', closeSidebar);
+sidebarClose.addEventListener('click', closeSidebar);
 
-  group.appendChild(countEl);
-  group.appendChild(bar);
-  group.appendChild(label);
-  npsChart.appendChild(group);
-});
+function renderSidebar(activeYear) {
+  sidebarYears.innerHTML = '';
+  YEARS.forEach(year => {
+    const item = document.createElement('a');
+    item.className = 'sidebar-year-item' + (year === activeYear ? ' active' : '');
+    item.href = `#/${year}`;
+    item.innerHTML = `
+      <div>
+        <div class="sidebar-year-num">${year}</div>
+        <div class="sidebar-year-label">${REPORTS[year].label}</div>
+      </div>
+    `;
+    item.addEventListener('click', () => closeSidebar());
+    sidebarYears.appendChild(item);
+  });
+}
 
-// ===== RENDER TESTIMONIALS =====
-const grid = document.getElementById('testimonialsGrid');
+// ===================================================================
+// RENDER HELPERS
+// ===================================================================
+function buildReasonRows(items) {
+  return items.map(r => `
+    <div class="reason-row reveal">
+      <div class="reason-label-row">
+        <span class="reason-label">${r.label}</span>
+        <span class="reason-pct">${r.pct}</span>
+      </div>
+      <div class="reason-track"><div class="reason-fill" data-width="${r.width}"></div></div>
+    </div>
+  `).join('');
+}
 
-function renderTestimonials(filter) {
+function renderTestimonials(testimonials, filter) {
+  const grid = document.getElementById('testimonialsGrid');
   grid.innerHTML = '';
   const filtered = filter === 'all' ? testimonials : testimonials.filter(t => t.tag === filter);
   filtered.forEach(t => {
     const card = document.createElement('div');
-    card.className = `testimonial-card${t.featured ? ' testimonial-featured' : ''}`;
+    card.className = 'testimonial-card' + (t.featured ? ' testimonial-featured' : '');
     card.innerHTML = `
       <div class="testimonial-text">${t.text}</div>
       <div class="testimonial-meta">
@@ -902,61 +1031,191 @@ function renderTestimonials(filter) {
     grid.appendChild(card);
   });
 }
-renderTestimonials('all');
 
-// Filter tabs
+// ===================================================================
+// MAIN RENDER
+// ===================================================================
+function renderReport(year) {
+  const data = REPORTS[year];
+  if (!data) return;
+  currentYear = year;
+  currentTestimonialFilter = 'all';
+
+  // Update page title
+  document.title = `區塊勢 — ${data.label}`;
+
+  // Hero
+  document.getElementById('heroLabel').textContent = data.label;
+  const heroStats = document.getElementById('heroStats');
+  heroStats.innerHTML = data.heroStats.map(s => `
+    <div>
+      <div class="hero-stat-num" data-count="${s.value}" ${s.decimal ? 'data-decimal="true"' : ''} ${s.suffix ? `data-suffix="${s.suffix}"` : ''}>0</div>
+      <div class="hero-stat-label">${s.label}</div>
+    </div>
+  `).join('');
+
+  // Marquee
+  const marqueeTrack = document.getElementById('marqueeTrack');
+  const marqueeHTML = data.marqueeQuotes.map(q => `<div class="marquee-item">「<em>${q}</em>」</div>`).join('');
+  marqueeTrack.innerHTML = marqueeHTML + marqueeHTML; // duplicate for seamless loop
+
+  // NPS chart
+  const npsChart = document.getElementById('npsChart');
+  npsChart.innerHTML = '';
+  const maxCount = Math.max(...data.npsData.map(d => d.count));
+  data.npsData.forEach(d => {
+    const group = document.createElement('div');
+    group.className = 'nps-bar-group';
+    const countEl = document.createElement('div');
+    countEl.className = 'nps-bar-count';
+    countEl.textContent = d.count || '';
+    const bar = document.createElement('div');
+    const cls = d.score <= 6 ? 'detractor' : d.score <= 8 ? 'passive' : 'promoter';
+    bar.className = `nps-bar ${cls}`;
+    bar.dataset.height = d.count > 0 ? (d.count / maxCount * 160) + 'px' : '4px';
+    const label = document.createElement('div');
+    label.className = 'nps-bar-score';
+    label.textContent = d.score;
+    group.appendChild(countEl);
+    group.appendChild(bar);
+    group.appendChild(label);
+    npsChart.appendChild(group);
+  });
+  document.getElementById('npsBig').textContent = data.npsScore;
+  document.getElementById('npsNote').textContent = data.npsNote;
+
+  // Stat cards
+  document.getElementById('statGrid').innerHTML = data.statCards.map(s => `
+    <div class="stat-card reveal">
+      <div class="stat-card-num">${s.num}</div>
+      <div class="stat-card-label">${s.label}</div>
+    </div>
+  `).join('');
+
+  // Reason bars
+  document.getElementById('reasonIntro').textContent = data.reasonIntro;
+  document.getElementById('reasonBars').innerHTML = buildReasonRows(data.reasonBars);
+
+  // Filter tabs
+  const filterTabs = document.getElementById('filterTabs');
+  filterTabs.innerHTML = data.filterTabs.map((t, i) => `
+    <button class="filter-tab${i === 0 ? ' active' : ''}" data-filter="${t.key}">${t.label}</button>
+  `).join('');
+
+  // Testimonials
+  renderTestimonials(data.testimonials, 'all');
+
+  // Profile cards
+  document.getElementById('profileGrid').innerHTML = data.profileCards.map(card => `
+    <div class="profile-card reveal">
+      <h3>${card.title}</h3>
+      ${card.items.map(item => `
+        <div class="profile-item">
+          <span class="profile-item-label">${item.label}</span>
+          <span class="profile-item-value">${item.value}</span>
+        </div>
+      `).join('')}
+    </div>
+  `).join('');
+
+  // Situations
+  document.getElementById('situationBars').innerHTML = buildReasonRows(data.situations);
+
+  // Footer
+  document.getElementById('footerSource').textContent = data.footerSource;
+
+  // Sidebar active state
+  renderSidebar(year);
+
+  // Re-init observers & animations
+  initObservers();
+}
+
+// ===================================================================
+// OBSERVERS (re-initialized on each render)
+// ===================================================================
+let revealObserver = null;
+let counterObserver = null;
+
+function initObservers() {
+  // Disconnect previous
+  if (revealObserver) revealObserver.disconnect();
+  if (counterObserver) counterObserver.disconnect();
+
+  // Scroll reveal
+  revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        entry.target.querySelectorAll('.nps-bar').forEach(bar => {
+          bar.style.height = bar.dataset.height;
+        });
+        entry.target.querySelectorAll('.reason-fill').forEach(bar => {
+          bar.style.width = bar.dataset.width;
+        });
+      }
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('.reveal').forEach(el => {
+    el.classList.remove('visible');
+    revealObserver.observe(el);
+  });
+
+  // Counter animation
+  counterObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && !entry.target.dataset.animated) {
+        entry.target.dataset.animated = 'true';
+        const target = parseFloat(entry.target.dataset.count);
+        const decimal = entry.target.dataset.decimal === 'true';
+        const suffix = entry.target.dataset.suffix || '';
+        const duration = 1500;
+        const start = performance.now();
+        function update(now) {
+          const elapsed = now - start;
+          const progress = Math.min(elapsed / duration, 1);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          const current = eased * target;
+          entry.target.textContent = (decimal ? current.toFixed(1) : Math.round(current)) + suffix;
+          if (progress < 1) requestAnimationFrame(update);
+        }
+        requestAnimationFrame(update);
+      }
+    });
+  }, { threshold: 0.5 });
+
+  document.querySelectorAll('[data-count]').forEach(el => {
+    delete el.dataset.animated;
+    counterObserver.observe(el);
+  });
+}
+
+// ===================================================================
+// FILTER TABS (delegated)
+// ===================================================================
 document.getElementById('filterTabs').addEventListener('click', e => {
   if (!e.target.classList.contains('filter-tab')) return;
   document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
   e.target.classList.add('active');
-  renderTestimonials(e.target.dataset.filter);
+  currentTestimonialFilter = e.target.dataset.filter;
+  renderTestimonials(REPORTS[currentYear].testimonials, currentTestimonialFilter);
 });
 
-// ===== SCROLL REVEAL =====
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add('visible');
-      // Animate NPS bars
-      entry.target.querySelectorAll('.nps-bar').forEach(bar => {
-        bar.style.height = bar.dataset.height;
-      });
-      // Animate reason bars
-      entry.target.querySelectorAll('.reason-fill').forEach(bar => {
-        bar.style.width = bar.dataset.width;
-      });
-    }
-  });
-}, { threshold: 0.15 });
-
-document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-// ===== COUNTER ANIMATION =====
-function animateCounter(el, target, decimal, suffix) {
-  const duration = 1500;
-  const start = performance.now();
-  function update(now) {
-    const elapsed = now - start;
-    const progress = Math.min(elapsed / duration, 1);
-    const eased = 1 - Math.pow(1 - progress, 3);
-    const current = eased * target;
-    el.textContent = (decimal ? current.toFixed(1) : Math.round(current)) + (suffix || '');
-    if (progress < 1) requestAnimationFrame(update);
-  }
-  requestAnimationFrame(update);
+// ===================================================================
+// ROUTING
+// ===================================================================
+function navigate() {
+  const year = getYearFromHash();
+  if (year === currentYear) return;
+  window.scrollTo({ top: 0, behavior: 'instant' });
+  renderReport(year);
 }
 
-const counterObserver = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting && !entry.target.dataset.animated) {
-      entry.target.dataset.animated = 'true';
-      const target = parseFloat(entry.target.dataset.count);
-      animateCounter(entry.target, target, entry.target.dataset.decimal === 'true', entry.target.dataset.suffix || '');
-    }
-  });
-}, { threshold: 0.5 });
+window.addEventListener('hashchange', navigate);
 
-document.querySelectorAll('[data-count]').forEach(el => counterObserver.observe(el));
+// Initial render
+renderReport(getYearFromHash());
 </script>
 </body>
 </html>
